@@ -1,0 +1,15 @@
+{
+	"Name": "Bookshop",
+	"Hash": "Bookshop",
+
+	"MainViewportViewIdentifier": "Bookshop-BookList",
+
+	"AutoSolveAfterInitialize": true,
+	"AutoRenderMainViewportViewAfterInitialize": false,
+	"AutoRenderViewsAfterInitialize": false,
+
+	"pict_configuration":
+		{
+			"Product": "Bookshop-Pict-Application"
+		}
+}

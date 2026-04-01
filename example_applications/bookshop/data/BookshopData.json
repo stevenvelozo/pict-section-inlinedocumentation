@@ -1,0 +1,65 @@
+{
+	"Books":
+	[
+		{
+			"IDBook": 1,
+			"Title": "The Pragmatic Programmer",
+			"Author": "David Thomas & Andrew Hunt",
+			"Price": 49.99,
+			"Genre": "Software Engineering",
+			"Cover": "https://picsum.photos/seed/pragprog/120/180",
+			"Description": "A classic guide to software craftsmanship covering topics from personal responsibility to architectural techniques.",
+			"InStock": true
+		},
+		{
+			"IDBook": 2,
+			"Title": "Designing Data-Intensive Applications",
+			"Author": "Martin Kleppmann",
+			"Price": 44.99,
+			"Genre": "Distributed Systems",
+			"Cover": "https://picsum.photos/seed/dataintensive/120/180",
+			"Description": "The big ideas behind reliable, scalable, and maintainable systems, with detailed analysis of the algorithms and protocols.",
+			"InStock": true
+		},
+		{
+			"IDBook": 3,
+			"Title": "Structure and Interpretation of Computer Programs",
+			"Author": "Harold Abelson & Gerald Jay Sussman",
+			"Price": 39.99,
+			"Genre": "Computer Science",
+			"Cover": "https://picsum.photos/seed/sicp/120/180",
+			"Description": "The legendary MIT textbook introducing core concepts of computation through Scheme.",
+			"InStock": false
+		},
+		{
+			"IDBook": 4,
+			"Title": "Clean Code",
+			"Author": "Robert C. Martin",
+			"Price": 37.99,
+			"Genre": "Software Engineering",
+			"Cover": "https://picsum.photos/seed/cleancode/120/180",
+			"Description": "A handbook of agile software craftsmanship with practical advice for writing better code.",
+			"InStock": true
+		},
+		{
+			"IDBook": 5,
+			"Title": "The Art of Computer Programming",
+			"Author": "Donald E. Knuth",
+			"Price": 79.99,
+			"Genre": "Computer Science",
+			"Cover": "https://picsum.photos/seed/taocp/120/180",
+			"Description": "Knuth's monumental multi-volume work covering fundamental algorithms and data structures.",
+			"InStock": true
+		},
+		{
+			"IDBook": 6,
+			"Title": "Refactoring",
+			"Author": "Martin Fowler",
+			"Price": 42.99,
+			"Genre": "Software Engineering",
+			"Cover": "https://picsum.photos/seed/refactoring/120/180",
+			"Description": "Improving the design of existing code through systematic transformations with catalog of refactoring patterns.",
+			"InStock": true
+		}
+	]
+}

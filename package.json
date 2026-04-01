@@ -1,0 +1,52 @@
+{
+	"name": "pict-section-inlinedocumentation",
+	"version": "0.0.1",
+	"description": "Pict embeddable inline documentation browser with topic support",
+	"main": "source/Pict-Section-InlineDocumentation.js",
+	"scripts": {
+		"start": "node source/Pict-Section-InlineDocumentation.js",
+		"test": "npx quack test",
+		"tests": "npx quack test -g",
+		"coverage": "npx quack coverage",
+		"build": "npx quack build",
+		"test-browser": "npx mocha test/Browser_Integration_tests.js --timeout 60000"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/stevenvelozo/pict-section-inlinedocumentation.git"
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/stevenvelozo/pict-section-inlinedocumentation/issues"
+	},
+	"homepage": "https://github.com/stevenvelozo/pict-section-inlinedocumentation#readme",
+	"dependencies": {
+		"pict-provider": "^1.0.12",
+		"pict-section-content": "^0.0.11",
+		"pict-view": "^1.0.67"
+	},
+	"devDependencies": {
+		"pict": "^1.0.361",
+		"puppeteer": "^24.40.0",
+		"quackage": "^1.0.65"
+	},
+	"mocha": {
+		"diff": true,
+		"extension": [
+			"js"
+		],
+		"package": "./package.json",
+		"reporter": "spec",
+		"slow": "75",
+		"timeout": "5000",
+		"ui": "tdd",
+		"watch-files": [
+			"source/**/*.js",
+			"test/**/*.js"
+		],
+		"watch-ignore": [
+			"lib/vendor"
+		]
+	}
+}

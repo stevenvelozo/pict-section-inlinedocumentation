@@ -1,0 +1,32 @@
+{
+	"BOOKSHOP-WELCOME": {
+		"TopicCode": "BOOKSHOP-WELCOME",
+		"TopicHelpFilePath": "welcome.md",
+		"TopicTitle": "Welcome to the Bookshop",
+		"Routes": ["/"]
+	},
+	"BOOKSHOP-BOOKLIST": {
+		"TopicCode": "BOOKSHOP-BOOKLIST",
+		"TopicHelpFilePath": "book-list.md",
+		"TopicTitle": "Browsing the Book Catalog",
+		"Routes": ["/books", "/books/catalog"]
+	},
+	"BOOKSHOP-BOOKDETAIL": {
+		"TopicCode": "BOOKSHOP-BOOKDETAIL",
+		"TopicHelpFilePath": "book-detail.md",
+		"TopicTitle": "Book Details & Purchasing",
+		"Routes": ["/books/detail/*"]
+	},
+	"BOOKSHOP-STORE": {
+		"TopicCode": "BOOKSHOP-STORE",
+		"TopicHelpFilePath": "store.md",
+		"TopicTitle": "The Store Page",
+		"Routes": ["/books/store/*"]
+	},
+	"BOOKSHOP-SEARCH": {
+		"TopicCode": "BOOKSHOP-SEARCH",
+		"TopicHelpFilePath": "search-filter.md",
+		"TopicTitle": "Searching & Filtering",
+		"Routes": ["/books/search", "/books/filter"]
+	}
+}

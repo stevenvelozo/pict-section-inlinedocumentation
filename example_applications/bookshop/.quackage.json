@@ -1,0 +1,10 @@
+{
+	"build":
+	[
+		{
+			"Type": "Browserify",
+			"Entry": "./Pict-Application-Bookshop.js",
+			"OutputFileName": "bookshop_example"
+		}
+	]
+}

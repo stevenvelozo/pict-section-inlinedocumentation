@@ -1,0 +1,10 @@
+{
+	"getting-started": {
+		"Name": "Getting Started",
+		"Documents": ["README.md", "getting-started.md"]
+	},
+	"advanced": {
+		"Name": "Advanced Usage",
+		"Documents": ["advanced-topics.md"]
+	}
+}

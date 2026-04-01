@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Inline Documentation Example</title>
+	<style>
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			background: #F5F3EE;
+			color: #3D3229;
+			padding: 2em;
+		}
+		h1 {
+			margin-bottom: 0.5em;
+			font-size: 1.5em;
+		}
+		.controls {
+			margin-bottom: 1em;
+			display: flex;
+			gap: 0.5em;
+			flex-wrap: wrap;
+		}
+		.controls button {
+			padding: 0.4em 0.8em;
+			border: 1px solid #C4BAA8;
+			border-radius: 4px;
+			background: #fff;
+			color: #3D3229;
+			cursor: pointer;
+			font-size: 0.9em;
+		}
+		.controls button:hover {
+			background: #F0ECE4;
+		}
+		.controls button.active {
+			background: #2E7D74;
+			color: #fff;
+			border-color: #2E7D74;
+		}
+		#InlineDoc-Container {
+			height: 600px;
+		}
+	</style>
+</head>
+<body>
+	<h1>Inline Documentation Browser</h1>
+	<div class="controls">
+		<button onclick="loadDoc('README.md')">Home</button>
+		<button onclick="loadDoc('getting-started.md')">Getting Started</button>
+		<button onclick="loadDoc('advanced-topics.md')">Advanced Topics</button>
+		<button onclick="setTopic('getting-started')">Topic: Getting Started</button>
+		<button onclick="setTopic('advanced')">Topic: Advanced</button>
+		<button onclick="clearTopic()">Clear Topic</button>
+		<button onclick="goBack()">Back</button>
+	</div>
+	<div id="InlineDoc-Container"></div>
+
+	<script src="../../dist/pict-section-inlinedocumentation.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/pict@1/dist/pict.min.js"></script>
+	<script>
+		var _Pict = new Pict({ Product: 'InlineDocExample' });
+
+		var InlineDocProvider = require('pict-section-inlinedocumentation');
+
+		var _DocProvider = _Pict.addProvider(
+			'Pict-InlineDocumentation',
+			InlineDocProvider.default_configuration,
+			InlineDocProvider);
+
+		_DocProvider.initializeDocumentation(
+			{ DocsBaseURL: 'docs/' },
+			function ()
+			{
+				_DocProvider.loadDocument('README.md');
+			});
+
+		function loadDoc(pPath)
+		{
+			_DocProvider.loadDocument(pPath);
+		}
+
+		function setTopic(pKey)
+		{
+			_DocProvider.setTopic(pKey);
+		}
+
+		function clearTopic()
+		{
+			_DocProvider.clearTopic();
+		}
+
+		function goBack()
+		{
+			_DocProvider.navigateBack();
+		}
+	</script>
+</body>
+</html>
