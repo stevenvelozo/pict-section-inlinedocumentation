@@ -674,7 +674,7 @@ suite
 				})
 				.then(function()
 				{
-					return _Page.waitForSelector('#InlineDoc-Edit-Textarea', { timeout: 5000 });
+					return _Page.waitForSelector('#InlineDoc-Editor-Container', { timeout: 5000 });
 				})
 				.then(function()
 				{
@@ -689,15 +689,15 @@ suite
 					return _Page.evaluate(function()
 					{
 						var state = window._Pict.AppData.InlineDocumentation;
-						var ta = document.getElementById('InlineDoc-Edit-Textarea');
+						var editorContainer = document.getElementById('InlineDoc-Editor-Container');
 						var saveBtn = document.getElementById('InlineDoc-Edit-Save');
 						var cancelBtn = document.getElementById('InlineDoc-Edit-Cancel');
 						var editBtn = document.getElementById('InlineDoc-Edit-Toggle');
 						return {
 							editing: state.Editing,
 							editingPath: state.EditingPath,
-							hasTextarea: !!ta,
-							textareaLength: ta ? ta.value.length : 0,
+							hasEditor: !!editorContainer,
+							contentLength: (state.EditorSegments && state.EditorSegments.length > 0) ? (state.EditorSegments[0].Content || '').length : 0,
 							saveBtnVisible: saveBtn ? saveBtn.style.display !== 'none' : false,
 							cancelBtnVisible: cancelBtn ? cancelBtn.style.display !== 'none' : false,
 							editBtnHidden: editBtn ? editBtn.style.display === 'none' : false
@@ -708,17 +708,22 @@ suite
 				{
 					Expect(pResult.editing).to.be.true;
 					Expect(pResult.editingPath).to.equal('store.md');
-					Expect(pResult.hasTextarea).to.be.true;
-					Expect(pResult.textareaLength).to.be.above(0, 'Textarea should contain markdown');
+					Expect(pResult.hasEditor).to.be.true;
+					Expect(pResult.contentLength).to.be.above(0, 'Editor should contain markdown');
 					Expect(pResult.saveBtnVisible).to.be.true;
 					Expect(pResult.cancelBtnVisible).to.be.true;
 					Expect(pResult.editBtnHidden).to.be.true;
 
 					return _Page.evaluate(function()
 					{
-						var ta = document.getElementById('InlineDoc-Edit-Textarea');
-						ta.value = '# Edited Store Help\\n\\nThis was edited by the browser test.\\n\\n## Browser Test Section\\n\\nNew content added.';
-						return ta.value.length;
+						var editorView = window._Pict.views['InlineDoc-MarkdownEditor'];
+						var newContent = '# Edited Store Help\n\nThis was edited by the browser test.\n\n## Browser Test Section\n\nNew content added.';
+						if (editorView && typeof editorView.setSegmentContent === 'function')
+						{
+							editorView.setSegmentContent(0, newContent);
+						}
+						window._Pict.AppData.InlineDocumentation.EditorSegments[0].Content = newContent;
+						return newContent.length;
 					});
 				})
 				.then(function(pNewLength)
@@ -730,7 +735,7 @@ suite
 				.then(function()
 				{
 					return _Page.waitForFunction(
-						'!document.getElementById("InlineDoc-Edit-Textarea")',
+						'!document.getElementById("InlineDoc-Editor-Container")',
 						{ timeout: 5000 }
 					);
 				})
@@ -783,14 +788,19 @@ suite
 				_Page.evaluate(function() { document.getElementById('InlineDoc-Edit-Toggle').click(); })
 					.then(function()
 					{
-						return _Page.waitForSelector('#InlineDoc-Edit-Textarea', { timeout: 5000 });
+						return _Page.waitForSelector('#InlineDoc-Editor-Container', { timeout: 5000 });
 					})
 					.then(function()
 					{
 						return _Page.evaluate(function()
 						{
-							var ta = document.getElementById('InlineDoc-Edit-Textarea');
-							ta.value = '# CANCELLED CHANGES\\n\\nThis should not appear.';
+							var editorView = window._Pict.views['InlineDoc-MarkdownEditor'];
+							var newContent = '# CANCELLED CHANGES\n\nThis should not appear.';
+							if (editorView && typeof editorView.setSegmentContent === 'function')
+							{
+								editorView.setSegmentContent(0, newContent);
+							}
+							window._Pict.AppData.InlineDocumentation.EditorSegments[0].Content = newContent;
 						});
 					})
 					.then(function()
@@ -804,7 +814,7 @@ suite
 					.then(function()
 					{
 						return _Page.waitForFunction(
-							'!document.getElementById("InlineDoc-Edit-Textarea")',
+							'!document.getElementById("InlineDoc-Editor-Container")',
 							{ timeout: 5000 }
 						);
 					})
@@ -1332,7 +1342,7 @@ suite
 				})
 				.then(function()
 				{
-					return _Page.waitForSelector('#InlineDoc-Edit-Textarea', { timeout: 5000 });
+					return _Page.waitForSelector('#InlineDoc-Editor-Container', { timeout: 5000 });
 				})
 				.then(function()
 				{
@@ -1342,8 +1352,13 @@ suite
 				{
 					return _Page.evaluate(function()
 					{
-						var ta = document.getElementById('InlineDoc-Edit-Textarea');
-						ta.value = '# Updated Custom Help\\n\\nThis topic was edited after being created at runtime.\\n\\n## Now With Route Binding\\n\\nBound to /custom.';
+						var editorView = window._Pict.views['InlineDoc-MarkdownEditor'];
+						var newContent = '# Updated Custom Help\n\nThis topic was edited after being created at runtime.\n\n## Now With Route Binding\n\nBound to /custom.';
+						if (editorView && typeof editorView.setSegmentContent === 'function')
+						{
+							editorView.setSegmentContent(0, newContent);
+						}
+						window._Pict.AppData.InlineDocumentation.EditorSegments[0].Content = newContent;
 					});
 				})
 				.then(function()
@@ -1353,7 +1368,7 @@ suite
 				.then(function()
 				{
 					return _Page.waitForFunction(
-						'!document.getElementById("InlineDoc-Edit-Textarea")',
+						'!document.getElementById("InlineDoc-Editor-Container")',
 						{ timeout: 5000 }
 					);
 				})

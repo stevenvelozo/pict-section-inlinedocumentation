@@ -202,13 +202,14 @@ class BookshopBookListView extends libPictView
 
 		// Section header with help button
 		tmpHTML += '<div class="bookshop-section-header">';
-		tmpHTML += '<h2 class="bookshop-section-title">Book Catalog</h2>';
+		tmpHTML += '<h2 class="bookshop-section-title" data-d-tooltip="catalog-title">Book Catalog</h2>';
+		tmpHTML += '<span data-d-tooltip="catalog-info" data-d-tooltip-icon></span>';
 		tmpHTML += '<button class="bookshop-help-btn" id="Bookshop-Help-BookList" title="Help: Book Catalog">?</button>';
 		tmpHTML += '</div>';
 
 		// Filter bar with help button
 		tmpHTML += '<div class="bookshop-filter-bar">';
-		tmpHTML += '<label>Genre:</label>';
+		tmpHTML += '<label data-d-tooltip="genre-filter">Genre:</label>';
 		tmpHTML += '<select id="Bookshop-GenreFilter">';
 		tmpHTML += '<option value="">All Genres</option>';
 		for (let g = 0; g < tmpGenres.length; g++)
@@ -217,6 +218,7 @@ class BookshopBookListView extends libPictView
 			tmpHTML += '<option value="' + tmpGenres[g] + '"' + tmpSelected + '>' + tmpGenres[g] + '</option>';
 		}
 		tmpHTML += '</select>';
+		tmpHTML += '<span data-d-tooltip="filter-info" data-d-tooltip-icon></span>';
 		tmpHTML += '<button class="bookshop-help-btn" id="Bookshop-Help-Search" title="Help: Search & Filter">?</button>';
 		tmpHTML += '</div>';
 
@@ -233,10 +235,10 @@ class BookshopBookListView extends libPictView
 			tmpHTML += '<div class="bookshop-book-info">';
 			tmpHTML += '<p class="bookshop-book-title">' + tmpBook.Title + '</p>';
 			tmpHTML += '<p class="bookshop-book-author">' + tmpBook.Author + '</p>';
-			tmpHTML += '<span class="bookshop-book-genre">' + tmpBook.Genre + '</span>';
+			tmpHTML += '<span class="bookshop-book-genre" data-d-tooltip="book-genre">' + tmpBook.Genre + '</span>';
 			tmpHTML += '<div>';
-			tmpHTML += '<span class="bookshop-book-price">$' + tmpBook.Price.toFixed(2) + '</span>';
-			tmpHTML += '<span class="bookshop-book-stock ' + tmpStockClass + '">' + tmpStockText + '</span>';
+			tmpHTML += '<span class="bookshop-book-price" data-d-tooltip="book-price">$' + tmpBook.Price.toFixed(2) + '</span>';
+			tmpHTML += '<span class="bookshop-book-stock ' + tmpStockClass + '" data-d-tooltip="stock-status">' + tmpStockText + '</span>';
 			tmpHTML += '</div>';
 			tmpHTML += '</div>';
 			tmpHTML += '</div>';
@@ -247,6 +249,13 @@ class BookshopBookListView extends libPictView
 
 		// Wire click handlers
 		this._wireHandlers(tmpContainer);
+
+		// Scan for tooltip placeholders
+		let tmpDocProvider = this.pict.providers['Pict-InlineDocumentation'];
+		if (tmpDocProvider)
+		{
+			tmpDocProvider.scanTooltips();
+		}
 	}
 
 	_wireHandlers(pContainer)

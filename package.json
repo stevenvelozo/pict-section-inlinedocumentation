@@ -24,6 +24,8 @@
 	"dependencies": {
 		"pict-provider": "^1.0.12",
 		"pict-section-content": "^0.0.11",
+		"pict-section-markdowneditor": "file:../pict-section-markdowneditor",
+		"pict-section-modal": "file:../pict-section-modal",
 		"pict-view": "^1.0.67"
 	},
 	"devDependencies": {

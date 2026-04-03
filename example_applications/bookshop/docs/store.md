@@ -9,7 +9,11 @@ The store page uses a two-column layout:
 1. **Left column** — Book cover image
 2. **Right column** — Book metadata, description, and action buttons
 
-## Stock Status
+## Pricing
+
+All prices are displayed in **USD** and include applicable tax. The price shown on the store page is the final price — no hidden fees at checkout.
+
+## Availability
 
 Books can have one of two statuses:
 
@@ -17,6 +21,8 @@ Books can have one of two statuses:
 |--------|---------|
 | **In Stock** | The book is available for purchase |
 | **Out of Stock** | The book is currently unavailable |
+
+Out of stock titles may be restocked periodically. Check back later or browse similar titles in the catalog.
 
 ## Returning to the Catalog
 

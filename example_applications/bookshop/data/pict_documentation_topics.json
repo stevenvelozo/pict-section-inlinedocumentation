@@ -9,7 +9,14 @@
 		"TopicCode": "BOOKSHOP-BOOKLIST",
 		"TopicHelpFilePath": "book-list.md",
 		"TopicTitle": "Browsing the Book Catalog",
-		"Routes": ["/books", "/books/catalog"]
+		"Routes": ["/books", "/books/catalog"],
+		"Tooltips": {
+			"catalog-title": { "Content": "Browse our full collection of books. Click any book to view details and purchase.\n\nSee [Book Catalog Help](help:book-list.md) for the full guide." },
+			"catalog-info": { "Content": "**Tip:** Use the genre filter to narrow results, or click a book card to visit its store page.\n\nLearn more: [Searching & Filtering](help:search-filter.md)" },
+			"genre-filter": { "Content": "Filter the catalog by literary genre. Select **All Genres** to see everything.\n\nFor advanced filtering tips, see [Search & Filter Guide](help:search-filter.md)." },
+			"book-price": { "Content": "All prices are in **USD** and include tax.\n\nSee [Store Page Help → Pricing](help:store.md#pricing) for details." },
+			"stock-status": { "Content": "**In Stock** means the book is available for immediate purchase. **Out of Stock** items cannot be added to cart.\n\nMore info: [Store Help → Availability](help:store.md#availability)" }
+		}
 	},
 	"BOOKSHOP-BOOKDETAIL": {
 		"TopicCode": "BOOKSHOP-BOOKDETAIL",
@@ -21,7 +28,14 @@
 		"TopicCode": "BOOKSHOP-STORE",
 		"TopicHelpFilePath": "store.md",
 		"TopicTitle": "The Store Page",
-		"Routes": ["/books/store/*"]
+		"Routes": ["/books/store/*"],
+		"Tooltips": {
+			"genre-badge": { "Content": "Books are categorized by genre to help you find similar titles.\n\nSee the [full catalog](help:book-list.md) to browse by genre." },
+			"store-price": { "Content": "The listed price is the final price in **USD**, tax included.\n\n[Pricing details](help:store.md#pricing)" },
+			"store-stock": { "Content": "Real-time availability. Out of stock items may be restocked — check back later.\n\n[Availability info](help:store.md#availability)" },
+			"add-to-cart": { "Content": "Adds this book to your shopping cart. You can review your cart before checkout.\n\nSee [Store Help](help:store.md) for the full purchasing guide." },
+			"cart-info": { "Content": "**Shopping Cart:** Items stay in your cart until you complete checkout or remove them.\n\nFor help: [Store Guide](help:store.md) | [Book Details](help:book-detail.md)" }
+		}
 	},
 	"BOOKSHOP-SEARCH": {
 		"TopicCode": "BOOKSHOP-SEARCH",

@@ -55,6 +55,22 @@ class BookshopApplication extends libPictApplication
 					this.log.info(`Bookshop: Saving document [${pSaveData.Path}] (${pSaveData.Content.length} chars)`);
 					// In a real app, this would PUT to an API
 					return fSaveCallback(null);
+				},
+				onTopicsSave: (pTopics, fSaveCallback) =>
+				{
+					// Demo topics save handler — log to console
+					this.log.info(`Bookshop: Saving topics (${Object.keys(pTopics).length} topics)`);
+					// In a real app, this would PUT to an API
+					return fSaveCallback(null);
+				},
+				onImageUpload: (pFile, pDocumentPath, fCallback) =>
+				{
+					// Demo image upload handler — log to console
+					this.log.info(`Bookshop: Image upload [${pFile.name}] (${pFile.size} bytes) for document [${pDocumentPath}]`);
+					// In a real app, this would POST the file to a server
+					// and return a relative URL for the markdown reference.
+					// For the demo, fall back to base64 by returning an error.
+					return fCallback('Demo mode: no upload server configured');
 				}
 			},
 			() =>

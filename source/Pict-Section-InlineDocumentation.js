@@ -7,3 +7,4 @@ module.exports = require('./providers/Pict-Provider-InlineDocumentation.js');
 module.exports.InlineDocumentationLayoutView = require('./views/Pict-View-InlineDocumentation-Layout.js');
 module.exports.InlineDocumentationContentView = require('./views/Pict-View-InlineDocumentation-Content.js');
 module.exports.InlineDocumentationNavView = require('./views/Pict-View-InlineDocumentation-Nav.js');
+module.exports.InlineDocumentationTopicManagerView = require('./views/Pict-View-InlineDocumentation-TopicManager.js');

@@ -172,9 +172,10 @@ class BookshopStoreView extends libPictView
 		let tmpHTML = '';
 
 		// Back button
-		tmpHTML += '<button class="bookshop-store-back" id="Bookshop-Store-Back">';
+		tmpHTML += '<button class="bookshop-store-back" id="Bookshop-Store-Back" data-d-tooltip="back-to-catalog">';
 		tmpHTML += '&#x2190; Back to Catalog';
 		tmpHTML += '</button>';
+		tmpHTML += ' <span data-d-tooltip="navigation-info" data-d-tooltip-icon></span>';
 
 		// Section header with help button
 		tmpHTML += '<div class="bookshop-section-header">';
@@ -191,12 +192,13 @@ class BookshopStoreView extends libPictView
 		// Info
 		tmpHTML += '<div class="bookshop-store-info">';
 		tmpHTML += '<h1 class="bookshop-store-title">' + tmpBook.Title + '</h1>';
-		tmpHTML += '<p class="bookshop-store-author">by ' + tmpBook.Author + '</p>';
-		tmpHTML += '<span class="bookshop-store-genre-badge">' + tmpBook.Genre + '</span>';
+		tmpHTML += '<p class="bookshop-store-author" data-d-tooltip="store-author">by ' + tmpBook.Author + '</p>';
+		tmpHTML += '<span class="bookshop-store-genre-badge" data-d-tooltip="genre-badge">' + tmpBook.Genre + '</span>';
 		tmpHTML += '<p class="bookshop-store-description">' + tmpBook.Description + '</p>';
-		tmpHTML += '<div class="bookshop-store-price">$' + tmpBook.Price.toFixed(2) + '</div>';
-		tmpHTML += '<div class="bookshop-store-stock ' + tmpStockClass + '">' + tmpStockText + '</div>';
-		tmpHTML += '<button class="bookshop-store-add-cart" id="Bookshop-Store-AddCart"' + tmpDisabled + '>Add to Cart</button>';
+		tmpHTML += '<div class="bookshop-store-price" data-d-tooltip="store-price">$' + tmpBook.Price.toFixed(2) + '</div>';
+		tmpHTML += '<div class="bookshop-store-stock ' + tmpStockClass + '" data-d-tooltip="store-stock">' + tmpStockText + '</div>';
+		tmpHTML += '<button class="bookshop-store-add-cart" id="Bookshop-Store-AddCart"' + tmpDisabled + ' data-d-tooltip="add-to-cart">Add to Cart</button>';
+		tmpHTML += ' <span data-d-tooltip="cart-info" data-d-tooltip-icon></span>';
 		tmpHTML += '</div>';
 
 		tmpHTML += '</div>';
@@ -205,6 +207,13 @@ class BookshopStoreView extends libPictView
 
 		// Wire handlers
 		this._wireHandlers(tmpContainer);
+
+		// Scan for tooltip placeholders
+		let tmpDocProvider = this.pict.providers['Pict-InlineDocumentation'];
+		if (tmpDocProvider)
+		{
+			tmpDocProvider.scanTooltips();
+		}
 	}
 
 	_wireHandlers(pContainer)

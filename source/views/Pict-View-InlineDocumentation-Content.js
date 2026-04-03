@@ -195,24 +195,87 @@ const _ViewConfiguration =
 		.pict-inline-doc-edit-btn .btn-icon {
 			margin-right: 0.3em;
 		}
-		#InlineDoc-Edit-Textarea {
-			width: 100%;
+		#InlineDoc-Editor-Container {
 			min-height: 300px;
-			padding: 1em;
+		}
+		/* Tooltip placeholder: edit mode indicators */
+		[data-d-tooltip].pict-inline-doc-tooltip-edit-target {
+			outline: 1px dashed #2E7D74;
+			outline-offset: 2px;
+			cursor: pointer;
+			position: relative;
+		}
+		[data-d-tooltip].pict-inline-doc-tooltip-edit-target:not([data-d-tooltip-icon])::after {
+			content: '?';
+			position: absolute;
+			top: -6px;
+			right: -6px;
+			width: 14px;
+			height: 14px;
+			background: #2E7D74;
+			color: #fff;
+			border-radius: 50%;
+			font-size: 9px;
+			line-height: 14px;
+			text-align: center;
+			font-weight: 700;
+			pointer-events: none;
+		}
+		/* Tooltip placeholder: default icon */
+		.pict-inline-doc-tooltip-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 16px;
+			height: 16px;
+			font-size: 12px;
+			color: #2E7D74;
+			cursor: pointer;
+			vertical-align: middle;
+		}
+		/* Empty icon tooltip in edit mode */
+		.pict-inline-doc-tooltip-empty .pict-inline-doc-tooltip-icon {
+			opacity: 0.4;
+			outline: 1px dashed #8A7F72;
+			outline-offset: 1px;
+			border-radius: 50%;
+		}
+		/* Tooltip editor textarea in modal */
+		.pict-inline-doc-tooltip-editor-textarea {
+			width: 100%;
+			min-height: 120px;
+			padding: 0.6em;
 			font-family: 'SFMono-Regular', 'SF Mono', 'Menlo', 'Consolas', monospace;
 			font-size: 0.85em;
-			line-height: 1.6;
+			line-height: 1.5;
 			color: #3D3229;
 			background: #FDFCFA;
 			border: 1px solid #DDD6CA;
 			border-radius: 4px;
 			resize: vertical;
-			tab-size: 4;
+			box-sizing: border-box;
 		}
-		#InlineDoc-Edit-Textarea:focus {
+		.pict-inline-doc-tooltip-editor-textarea:focus {
 			outline: none;
 			border-color: #2E7D74;
 			box-shadow: 0 0 0 2px rgba(46, 125, 116, 0.15);
+		}
+		.pict-inline-doc-tooltip-preview {
+			margin-top: 0.5em;
+			padding: 0.5em 0.7em;
+			background: #F5F0E8;
+			border: 1px solid #E5DED4;
+			border-radius: 4px;
+			font-size: 0.9em;
+			min-height: 2em;
+			color: #3D3229;
+		}
+		.pict-inline-doc-tooltip-preview-label {
+			font-size: 0.75em;
+			color: #8A7F72;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			margin-bottom: 0.3em;
 		}
 	`,
 
@@ -339,7 +402,7 @@ class InlineDocumentationContentView extends libPictContentView
 	}
 
 	/**
-	 * Show a textarea editor with the raw markdown content.
+	 * Show the markdown editor with the raw markdown content.
 	 *
 	 * @param {string} pMarkdown - The raw markdown to edit
 	 */
@@ -356,28 +419,21 @@ class InlineDocumentationContentView extends libPictContentView
 			return;
 		}
 
-		tmpContainer.innerHTML = '<textarea id="InlineDoc-Edit-Textarea">'
-			+ (pMarkdown || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-			+ '</textarea>';
+		// Create a container for the markdown editor view to render into
+		tmpContainer.innerHTML = '<div id="InlineDoc-Editor-Container"></div>';
 
-		// Focus the textarea
-		let tmpTextarea = document.getElementById('InlineDoc-Edit-Textarea');
-		if (tmpTextarea)
+		// Set up the editor segments data for the markdown editor
+		if (!this.pict.AppData.InlineDocumentation)
 		{
-			tmpTextarea.focus();
+			this.pict.AppData.InlineDocumentation = {};
+		}
+		this.pict.AppData.InlineDocumentation.EditorSegments = [{ Content: pMarkdown || '' }];
 
-			// Support tab key for indentation
-			tmpTextarea.addEventListener('keydown', (pEvent) =>
-			{
-				if (pEvent.key === 'Tab')
-				{
-					pEvent.preventDefault();
-					let tmpStart = tmpTextarea.selectionStart;
-					let tmpEnd = tmpTextarea.selectionEnd;
-					tmpTextarea.value = tmpTextarea.value.substring(0, tmpStart) + '\t' + tmpTextarea.value.substring(tmpEnd);
-					tmpTextarea.selectionStart = tmpTextarea.selectionEnd = tmpStart + 1;
-				}
-			});
+		// Render the markdown editor view into the container
+		let tmpEditorView = this.pict.views['InlineDoc-MarkdownEditor'];
+		if (tmpEditorView)
+		{
+			tmpEditorView.render();
 		}
 
 		this.renderEditToolbar();

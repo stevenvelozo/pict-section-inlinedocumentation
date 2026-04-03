@@ -80,6 +80,49 @@ const _ViewConfiguration =
 		.pict-inline-doc-nav-topic-clear:hover {
 			opacity: 1;
 		}
+		.pict-inline-doc-nav-toolbar {
+			display: flex;
+			align-items: center;
+			gap: 0.3em;
+			padding: 0.3em 1em;
+			border-bottom: 1px solid #EAE3D8;
+		}
+		.pict-inline-doc-nav-toolbar-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			border: 1px solid #DDD6CA;
+			border-radius: 3px;
+			background: #fff;
+			color: #5E5549;
+			font-size: 0.9em;
+			cursor: pointer;
+			transition: background 0.1s, border-color 0.1s;
+		}
+		.pict-inline-doc-nav-toolbar-btn:hover {
+			background: #F0ECE4;
+			border-color: #C4BDB3;
+		}
+		.pict-inline-doc-nav-toolbar-btn.accent {
+			border-color: #2E7D74;
+			color: #2E7D74;
+		}
+		.pict-inline-doc-nav-toolbar-btn.accent:hover {
+			background: #F0F9F7;
+		}
+		.pict-inline-doc-nav-toolbar-btn.active {
+			background: #2E7D74;
+			color: #fff;
+			border-color: #2E7D74;
+		}
+		.pict-inline-doc-nav-toolbar-btn.active:hover {
+			background: #266D65;
+		}
+		.pict-inline-doc-nav-toolbar-spacer {
+			flex: 1;
+		}
 		/* Compact (horizontal) nav mode */
 		.pict-inline-doc-compact .pict-inline-doc-nav {
 			display: flex;
@@ -120,6 +163,16 @@ const _ViewConfiguration =
 			margin: 0 0.5em;
 			padding: 0.2em 0.5em;
 			font-size: 0.75em;
+		}
+		.pict-inline-doc-compact .pict-inline-doc-nav-toolbar {
+			padding: 0.2em 0.5em;
+			border-bottom: none;
+			border-right: 1px solid #EAE3D8;
+		}
+		.pict-inline-doc-compact .pict-inline-doc-nav-toolbar-btn {
+			width: 24px;
+			height: 24px;
+			font-size: 0.8em;
 		}
 	`,
 
@@ -214,6 +267,21 @@ class InlineDocumentationNavView extends libPictView
 				+ this._escapeHTML(tmpTopicName)
 				+ '<span class="pict-inline-doc-nav-topic-clear" id="InlineDoc-Nav-ClearTopic">&#x2715;</span>'
 				+ '</div>';
+		}
+
+		// Topic management toolbar
+		if (tmpState.TopicManagerEnabled)
+		{
+			tmpHTML += '<div class="pict-inline-doc-nav-toolbar">';
+			tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn" id="InlineDoc-Nav-ManageTopics" title="Manage Topics">&#x2699;</button>';
+			if (tmpState.CurrentRoute)
+			{
+				tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn accent" id="InlineDoc-Nav-BindTopic" title="Bind topic to current route">&#x1F517;</button>';
+			}
+			let tmpTooltipEditActive = tmpState.TooltipEditMode ? ' active' : '';
+			tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn' + tmpTooltipEditActive + '" id="InlineDoc-Nav-TooltipEditMode" title="Toggle tooltip edit mode">&#x1F4AC;</button>';
+			tmpHTML += '<span class="pict-inline-doc-nav-toolbar-spacer"></span>';
+			tmpHTML += '</div>';
 		}
 
 		let tmpGroups = tmpState.SidebarGroups || [];
@@ -332,6 +400,52 @@ class InlineDocumentationNavView extends libPictView
 			{
 				pEvent.stopPropagation();
 				tmpProvider.clearTopic();
+			});
+		}
+
+		// Topic manager button
+		let tmpManageBtn = pContainer.querySelector('#InlineDoc-Nav-ManageTopics');
+		if (tmpManageBtn)
+		{
+			tmpManageBtn.addEventListener('click', (pEvent) =>
+			{
+				pEvent.stopPropagation();
+				let tmpTopicManagerView = this.pict.views['InlineDoc-TopicManager'];
+				if (tmpTopicManagerView)
+				{
+					tmpTopicManagerView.showTopicManager();
+				}
+			});
+		}
+
+		// Tooltip edit mode toggle
+		let tmpTooltipEditBtn = pContainer.querySelector('#InlineDoc-Nav-TooltipEditMode');
+		if (tmpTooltipEditBtn)
+		{
+			tmpTooltipEditBtn.addEventListener('click', (pEvent) =>
+			{
+				pEvent.stopPropagation();
+				let tmpDocProvider = this.pict.providers['Pict-InlineDocumentation'];
+				if (tmpDocProvider)
+				{
+					let tmpCurrentState = this.pict.AppData.InlineDocumentation;
+					tmpDocProvider.setTooltipEditMode(!tmpCurrentState.TooltipEditMode);
+				}
+			});
+		}
+
+		// Bind topic to route button
+		let tmpBindBtn = pContainer.querySelector('#InlineDoc-Nav-BindTopic');
+		if (tmpBindBtn)
+		{
+			tmpBindBtn.addEventListener('click', (pEvent) =>
+			{
+				pEvent.stopPropagation();
+				let tmpTopicManagerView = this.pict.views['InlineDoc-TopicManager'];
+				if (tmpTopicManagerView)
+				{
+					tmpTopicManagerView.showBindTopicToRoute();
+				}
 			});
 		}
 	}

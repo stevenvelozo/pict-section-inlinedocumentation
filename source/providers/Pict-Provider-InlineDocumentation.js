@@ -1,10 +1,13 @@
 const libPictProvider = require('pict-provider');
 const libPictSectionContent = require('pict-section-content');
 const libPictContentProvider = libPictSectionContent.PictContentProvider;
+const libPictSectionModal = require('pict-section-modal');
+const libPictSectionMarkdownEditor = require('pict-section-markdowneditor');
 
 const libViewLayout = require('../views/Pict-View-InlineDocumentation-Layout.js');
 const libViewContent = require('../views/Pict-View-InlineDocumentation-Content.js');
 const libViewNav = require('../views/Pict-View-InlineDocumentation-Nav.js');
+const libViewTopicManager = require('../views/Pict-View-InlineDocumentation-TopicManager.js');
 
 /**
  * Inline Documentation Provider
@@ -23,6 +26,8 @@ class InlineDocumentationProvider extends libPictProvider
 		super(pFable, tmpOptions, pServiceHash);
 
 		this._ContentCache = {};
+		this._ActiveTooltipBindings = [];
+		this._tooltipHelpLinkHandler = null;
 
 		// Instantiate the content provider for markdown parsing
 		this._ContentProvider = this.pict.addProviderSingleton('Pict-Content', libPictContentProvider.default_configuration, libPictContentProvider);
@@ -31,6 +36,29 @@ class InlineDocumentationProvider extends libPictProvider
 		this.pict.addViewSingleton('InlineDoc-Layout', libViewLayout.default_configuration, libViewLayout);
 		this.pict.addViewSingleton('InlineDoc-Content', libViewContent.default_configuration, libViewContent);
 		this.pict.addViewSingleton('InlineDoc-Nav', libViewNav.default_configuration, libViewNav);
+		this.pict.addViewSingleton('InlineDoc-TopicManager', libViewTopicManager.default_configuration, libViewTopicManager);
+
+		// Register pict-section-modal if not already present (needed by topic manager)
+		if (!this.pict.views['Pict-Section-Modal'])
+		{
+			this.pict.addViewSingleton('Pict-Section-Modal', libPictSectionModal.default_configuration, libPictSectionModal);
+		}
+
+		// Register the markdown editor for edit mode
+		let tmpEditorConfig = JSON.parse(JSON.stringify(libPictSectionMarkdownEditor.default_configuration));
+		tmpEditorConfig.DefaultDestinationAddress = '#InlineDoc-Editor-Container';
+		tmpEditorConfig.TargetElementAddress = '#InlineDoc-Editor-Container';
+		tmpEditorConfig.ContentDataAddress = 'AppData.InlineDocumentation.EditorSegments';
+		tmpEditorConfig.DefaultPreviewMode = 'off';
+		tmpEditorConfig.Renderables =
+		[
+			{
+				RenderableHash: 'MarkdownEditor-Wrap',
+				TemplateHash: 'MarkdownEditor-Container',
+				DestinationAddress: '#InlineDoc-Editor-Container'
+			}
+		];
+		this.pict.addViewSingleton('InlineDoc-MarkdownEditor', tmpEditorConfig, libPictSectionMarkdownEditor);
 	}
 
 	/**
@@ -67,11 +95,38 @@ class InlineDocumentationProvider extends libPictProvider
 		tmpState.Editing = false;
 		tmpState.EditingPath = '';
 		tmpState.EditingContent = '';
+		tmpState.TooltipEditMode = false;
 
 		// Store the onSave callback if provided
 		if (typeof tmpOptions.onSave === 'function')
 		{
 			this._onSave = tmpOptions.onSave;
+		}
+
+		// Store the onTopicsSave callback if provided
+		if (typeof tmpOptions.onTopicsSave === 'function')
+		{
+			this._onTopicsSave = tmpOptions.onTopicsSave;
+		}
+
+		// Store the onImageUpload callback if provided
+		if (typeof tmpOptions.onImageUpload === 'function')
+		{
+			this._onImageUpload = tmpOptions.onImageUpload;
+			this._wireEditorImageUpload();
+		}
+
+		// Topic manager enabled state
+		// If explicitly set, use that; otherwise track EditEnabled
+		if (tmpOptions.TopicManagerEnabled !== undefined)
+		{
+			tmpState.TopicManagerEnabled = !!tmpOptions.TopicManagerEnabled;
+			this._topicManagerExplicitlySet = true;
+		}
+		else
+		{
+			tmpState.TopicManagerEnabled = tmpState.EditEnabled || false;
+			this._topicManagerExplicitlySet = false;
 		}
 
 		// Optionally override the layout container address
@@ -128,8 +183,17 @@ class InlineDocumentationProvider extends libPictProvider
 		let tmpState = this.pict.AppData.InlineDocumentation;
 		let tmpContentView = this.pict.views['InlineDoc-Content'];
 
-		// Ensure .md extension
+		// Parse anchor from path (e.g. 'page.md#section-heading')
+		let tmpAnchor = '';
 		let tmpPath = pPath;
+		let tmpHashIndex = tmpPath.indexOf('#');
+		if (tmpHashIndex >= 0)
+		{
+			tmpAnchor = tmpPath.substring(tmpHashIndex + 1);
+			tmpPath = tmpPath.substring(0, tmpHashIndex);
+		}
+
+		// Ensure .md extension
 		if (!tmpPath.match(/\.md$/))
 		{
 			tmpPath = tmpPath + '.md';
@@ -155,6 +219,12 @@ class InlineDocumentationProvider extends libPictProvider
 			}
 
 			tmpContentView.displayContent(pHTML);
+
+			// Scroll to anchor if specified
+			if (tmpAnchor)
+			{
+				this._scrollToAnchor(tmpAnchor);
+			}
 
 			// Update nav to reflect active document
 			this.pict.views['InlineDoc-Nav'].render();
@@ -285,6 +355,257 @@ class InlineDocumentationProvider extends libPictProvider
 		{
 			tmpTopic.Routes.push(pRoutePattern);
 		}
+	}
+
+	/**
+	 * Get a list of all topics in a UI-friendly array format.
+	 *
+	 * @returns {Array} Array of { TopicCode, TopicTitle, TopicHelpFilePath, RouteCount }
+	 */
+	getTopicList()
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+		let tmpResult = [];
+
+		if (!tmpState || !tmpState.Topics)
+		{
+			return tmpResult;
+		}
+
+		let tmpTopicCodes = Object.keys(tmpState.Topics);
+
+		for (let i = 0; i < tmpTopicCodes.length; i++)
+		{
+			let tmpTopic = tmpState.Topics[tmpTopicCodes[i]];
+			tmpResult.push(
+			{
+				TopicCode: tmpTopicCodes[i],
+				TopicTitle: tmpTopic.TopicTitle || tmpTopic.Name || tmpTopicCodes[i],
+				TopicHelpFilePath: tmpTopic.TopicHelpFilePath || '',
+				RouteCount: (tmpTopic.Routes && Array.isArray(tmpTopic.Routes)) ? tmpTopic.Routes.length : 0
+			});
+		}
+
+		return tmpResult;
+	}
+
+	/**
+	 * Update an existing topic definition.
+	 *
+	 * Merges only the properties present in pUpdates into the topic.
+	 *
+	 * @param {string} pTopicCode - The topic to update
+	 * @param {Object} pUpdates - Properties to merge: { TopicTitle, TopicHelpFilePath, Routes }
+	 * @returns {boolean} True if updated, false if topic not found
+	 */
+	updateTopic(pTopicCode, pUpdates)
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (!pTopicCode || !tmpState.Topics || !tmpState.Topics[pTopicCode])
+		{
+			return false;
+		}
+
+		let tmpTopic = tmpState.Topics[pTopicCode];
+		let tmpUpdates = pUpdates || {};
+
+		if (tmpUpdates.hasOwnProperty('TopicTitle'))
+		{
+			tmpTopic.TopicTitle = tmpUpdates.TopicTitle;
+		}
+		if (tmpUpdates.hasOwnProperty('TopicHelpFilePath'))
+		{
+			tmpTopic.TopicHelpFilePath = tmpUpdates.TopicHelpFilePath;
+		}
+		if (tmpUpdates.hasOwnProperty('Routes'))
+		{
+			tmpTopic.Routes = tmpUpdates.Routes;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Remove a topic definition.
+	 *
+	 * If the removed topic is the currently active topic, clears it.
+	 *
+	 * @param {string} pTopicCode - The topic to remove
+	 * @returns {boolean} True if removed, false if topic not found
+	 */
+	removeTopic(pTopicCode)
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (!pTopicCode || !tmpState.Topics || !tmpState.Topics[pTopicCode])
+		{
+			return false;
+		}
+
+		delete tmpState.Topics[pTopicCode];
+
+		// Clear active topic if it was the one removed
+		if (tmpState.Topic === pTopicCode)
+		{
+			tmpState.Topic = null;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Remove a specific route pattern from a topic.
+	 *
+	 * @param {string} pTopicCode - The topic to modify
+	 * @param {string} pRoutePattern - The route pattern to remove
+	 * @returns {boolean} True if removed, false if not found
+	 */
+	removeRouteFromTopic(pTopicCode, pRoutePattern)
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (!pTopicCode || !tmpState.Topics || !tmpState.Topics[pTopicCode])
+		{
+			return false;
+		}
+
+		let tmpTopic = tmpState.Topics[pTopicCode];
+
+		if (!tmpTopic.Routes || !Array.isArray(tmpTopic.Routes))
+		{
+			return false;
+		}
+
+		let tmpIndex = tmpTopic.Routes.indexOf(pRoutePattern);
+
+		if (tmpIndex < 0)
+		{
+			return false;
+		}
+
+		tmpTopic.Routes.splice(tmpIndex, 1);
+		return true;
+	}
+
+	/**
+	 * Persist the current topics via the onTopicsSave callback.
+	 *
+	 * If no onTopicsSave handler was provided, succeeds locally.
+	 *
+	 * @param {Function} [fCallback] - Callback receiving (error)
+	 */
+	saveTopics(fCallback)
+	{
+		let tmpCallback = (typeof (fCallback) === 'function') ? fCallback : () => {};
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (typeof this._onTopicsSave === 'function')
+		{
+			this._onTopicsSave(tmpState.Topics, (pError) =>
+			{
+				if (pError)
+				{
+					this.log.warn(`InlineDocumentation: Topics save failed: ${pError}`);
+					return tmpCallback(pError);
+				}
+				return tmpCallback(null);
+			});
+		}
+		else
+		{
+			// No save handler — succeed locally
+			return tmpCallback(null);
+		}
+	}
+
+	/**
+	 * Enable or disable the topic manager UI.
+	 *
+	 * When enabled, management buttons appear in the navigation toolbar.
+	 *
+	 * @param {boolean} pEnabled - Whether topic management is available
+	 */
+	setTopicManagerEnabled(pEnabled)
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+		tmpState.TopicManagerEnabled = !!pEnabled;
+
+		// Re-render navigation to show/hide management buttons
+		let tmpNavView = this.pict.views['InlineDoc-Nav'];
+		if (tmpNavView)
+		{
+			tmpNavView.render();
+		}
+	}
+
+	// -- Wildcard builder helpers --
+
+	/**
+	 * Split a route into segments with wildcard pattern options.
+	 *
+	 * For a route like '/books/detail/5', returns:
+	 * [
+	 *   { Segment: 'books',  Path: '/books',         WildcardPattern: '/books/*',         Index: 0 },
+	 *   { Segment: 'detail', Path: '/books/detail',   WildcardPattern: '/books/detail/*',   Index: 1 },
+	 *   { Segment: '5',      Path: '/books/detail/5', WildcardPattern: '/books/detail/5/*', Index: 2 }
+	 * ]
+	 *
+	 * @param {string} pRoute - The route to split
+	 * @returns {Array} Array of segment objects
+	 */
+	getRouteSegments(pRoute)
+	{
+		if (!pRoute || typeof pRoute !== 'string')
+		{
+			return [];
+		}
+
+		// Strip leading slash and split
+		let tmpClean = pRoute.replace(/^\//, '');
+		if (!tmpClean)
+		{
+			return [];
+		}
+
+		let tmpParts = tmpClean.split('/');
+		let tmpSegments = [];
+
+		for (let i = 0; i < tmpParts.length; i++)
+		{
+			let tmpPath = '/' + tmpParts.slice(0, i + 1).join('/');
+			tmpSegments.push(
+			{
+				Segment: tmpParts[i],
+				Path: tmpPath,
+				WildcardPattern: tmpPath + '/*',
+				Index: i
+			});
+		}
+
+		return tmpSegments;
+	}
+
+	/**
+	 * Build a wildcard pattern from a route at a given segment index.
+	 *
+	 * The wildcard replaces everything after the segment at pSegmentIndex.
+	 * For '/books/detail/5' with index 1, returns '/books/detail/*'.
+	 *
+	 * @param {string} pRoute - The route
+	 * @param {number} pSegmentIndex - The segment index (0-based) where the wildcard starts after
+	 * @returns {string} The wildcard pattern, or empty string if invalid
+	 */
+	buildWildcardPattern(pRoute, pSegmentIndex)
+	{
+		let tmpSegments = this.getRouteSegments(pRoute);
+
+		if (tmpSegments.length < 1 || pSegmentIndex < 0 || pSegmentIndex >= tmpSegments.length)
+		{
+			return '';
+		}
+
+		return tmpSegments[pSegmentIndex].WildcardPattern;
 	}
 
 	/**
@@ -425,6 +746,19 @@ class InlineDocumentationProvider extends libPictProvider
 		let tmpState = this.pict.AppData.InlineDocumentation;
 		tmpState.EditEnabled = !!pEnabled;
 
+		// If TopicManagerEnabled was not explicitly configured, mirror EditEnabled
+		if (!this._topicManagerExplicitlySet)
+		{
+			tmpState.TopicManagerEnabled = !!pEnabled;
+
+			// Re-render navigation to show/hide management buttons
+			let tmpNavView = this.pict.views['InlineDoc-Nav'];
+			if (tmpNavView)
+			{
+				tmpNavView.render();
+			}
+		}
+
 		// Re-render content view to show/hide edit toolbar
 		let tmpContentView = this.pict.views['InlineDoc-Content'];
 		if (tmpContentView)
@@ -453,7 +787,7 @@ class InlineDocumentationProvider extends libPictProvider
 	/**
 	 * Enter edit mode for the current document.
 	 *
-	 * Retrieves the raw markdown from cache and displays it in a textarea.
+	 * Retrieves the raw markdown from cache and displays it in the markdown editor.
 	 */
 	beginEdit()
 	{
@@ -491,6 +825,7 @@ class InlineDocumentationProvider extends libPictProvider
 		tmpState.Editing = false;
 		tmpState.EditingPath = '';
 		tmpState.EditingContent = '';
+		tmpState.EditorSegments = [];
 
 		// Restore the rendered content
 		let tmpContentView = this.pict.views['InlineDoc-Content'];
@@ -511,7 +846,7 @@ class InlineDocumentationProvider extends libPictProvider
 	/**
 	 * Save the current edits.
 	 *
-	 * Reads the textarea content, calls the onSave callback provided by the
+	 * Reads the markdown editor content, calls the onSave callback provided by the
 	 * host app, re-parses the markdown, and returns to view mode.
 	 *
 	 * @param {Function} [fCallback] - Callback receiving (error)
@@ -527,15 +862,17 @@ class InlineDocumentationProvider extends libPictProvider
 			return tmpCallback('Not in edit mode');
 		}
 
-		// Read the current textarea content
+		// Read content from the markdown editor
+		// First marshal editor state to data, then read from the data address
 		let tmpMarkdown = '';
-		if (typeof document !== 'undefined')
+		let tmpEditorView = this.pict.views['InlineDoc-MarkdownEditor'];
+		if (tmpEditorView && typeof tmpEditorView.marshalFromView === 'function')
 		{
-			let tmpTextarea = document.getElementById('InlineDoc-Edit-Textarea');
-			if (tmpTextarea)
-			{
-				tmpMarkdown = tmpTextarea.value;
-			}
+			tmpEditorView.marshalFromView();
+		}
+		if (tmpState.EditorSegments && tmpState.EditorSegments.length > 0)
+		{
+			tmpMarkdown = tmpState.EditorSegments[0].Content || '';
 		}
 
 		let tmpPath = tmpState.EditingPath;
@@ -556,6 +893,7 @@ class InlineDocumentationProvider extends libPictProvider
 			tmpState.Editing = false;
 			tmpState.EditingPath = '';
 			tmpState.EditingContent = '';
+			tmpState.EditorSegments = [];
 
 			// Display the updated content
 			if (tmpContentView)
@@ -692,6 +1030,591 @@ class InlineDocumentationProvider extends libPictProvider
 		return false;
 	}
 
+	// -- Tooltip placeholders --
+
+	/**
+	 * Enable or disable tooltip edit mode.
+	 *
+	 * When enabled, all tooltip placeholders are visible and clickable
+	 * for content editors to author tooltip content. When disabled,
+	 * only placeholders with content show tooltips on hover.
+	 *
+	 * Automatically re-scans tooltips after toggling.
+	 *
+	 * @param {boolean} pEnabled - Whether tooltip edit mode is active
+	 */
+	setTooltipEditMode(pEnabled)
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (!tmpState)
+		{
+			return;
+		}
+
+		tmpState.TooltipEditMode = !!pEnabled;
+		this.scanTooltips();
+	}
+
+	/**
+	 * Get the tooltip content for a key from the active topic.
+	 *
+	 * Looks up the currently active topic's Tooltips hash for the
+	 * given key and returns the Content string, or null if not found.
+	 *
+	 * @param {string} pTooltipKey - The tooltip key (from data-d-tooltip attribute)
+	 * @returns {string|null} The tooltip content, or null
+	 */
+	getTooltipContent(pTooltipKey)
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (!pTooltipKey || !tmpState || !tmpState.Topic || !tmpState.Topics)
+		{
+			return null;
+		}
+
+		let tmpTopic = tmpState.Topics[tmpState.Topic];
+
+		if (!tmpTopic || !tmpTopic.Tooltips || !tmpTopic.Tooltips[pTooltipKey])
+		{
+			return null;
+		}
+
+		return tmpTopic.Tooltips[pTooltipKey].Content || null;
+	}
+
+	/**
+	 * Set tooltip content for a key on the active topic.
+	 *
+	 * Lazily creates the Tooltips hash on the topic if needed.
+	 * Passing null or empty string removes the tooltip entry.
+	 *
+	 * @param {string} pTooltipKey - The tooltip key
+	 * @param {string|null} pContent - The markdown content, or null to remove
+	 * @returns {boolean} True if set, false if no active topic
+	 */
+	setTooltipContent(pTooltipKey, pContent)
+	{
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (!pTooltipKey || !tmpState || !tmpState.Topic || !tmpState.Topics)
+		{
+			return false;
+		}
+
+		let tmpTopic = tmpState.Topics[tmpState.Topic];
+
+		if (!tmpTopic)
+		{
+			return false;
+		}
+
+		if (!pContent)
+		{
+			// Remove the entry
+			if (tmpTopic.Tooltips && tmpTopic.Tooltips[pTooltipKey])
+			{
+				delete tmpTopic.Tooltips[pTooltipKey];
+			}
+			return true;
+		}
+
+		// Lazily create Tooltips hash
+		if (!tmpTopic.Tooltips)
+		{
+			tmpTopic.Tooltips = {};
+		}
+
+		tmpTopic.Tooltips[pTooltipKey] = { Content: pContent };
+		return true;
+	}
+
+	/**
+	 * Remove all active tooltip bindings from the DOM.
+	 *
+	 * Destroys tooltip handles, removes click listeners, removes
+	 * injected icons, and restores original element state.
+	 */
+	clearTooltipBindings()
+	{
+		for (let i = 0; i < this._ActiveTooltipBindings.length; i++)
+		{
+			let tmpBinding = this._ActiveTooltipBindings[i];
+
+			// Destroy the modal tooltip handle
+			if (tmpBinding.TooltipHandle && typeof tmpBinding.TooltipHandle.destroy === 'function')
+			{
+				tmpBinding.TooltipHandle.destroy();
+			}
+
+			// Remove click handler
+			if (tmpBinding.ClickHandler && tmpBinding.Element)
+			{
+				tmpBinding.Element.removeEventListener('click', tmpBinding.ClickHandler);
+			}
+
+			// Remove injected icon
+			if (tmpBinding.InjectedIcon && tmpBinding.InjectedIcon.parentNode)
+			{
+				tmpBinding.InjectedIcon.parentNode.removeChild(tmpBinding.InjectedIcon);
+			}
+
+			// Remove edit-mode CSS classes
+			if (tmpBinding.Element)
+			{
+				tmpBinding.Element.classList.remove(
+					'pict-inline-doc-tooltip-edit-target',
+					'pict-inline-doc-tooltip-empty');
+			}
+
+			// Restore original display for hidden icon spans
+			if (tmpBinding.OriginalDisplay !== undefined && tmpBinding.Element)
+			{
+				tmpBinding.Element.style.display = tmpBinding.OriginalDisplay;
+			}
+		}
+
+		this._ActiveTooltipBindings = [];
+
+		// Remove document-level help link handler
+		if (this._tooltipHelpLinkHandler && typeof document !== 'undefined')
+		{
+			document.removeEventListener('click', this._tooltipHelpLinkHandler);
+			this._tooltipHelpLinkHandler = null;
+		}
+	}
+
+	/**
+	 * Scan the document for tooltip placeholder elements and wire them up.
+	 *
+	 * Finds all elements with data-d-tooltip attributes and:
+	 * - In normal mode: attaches hover tooltips for those with content
+	 * - In edit mode: adds visual indicators and click-to-edit handlers
+	 *
+	 * Call this after your application views render.
+	 */
+	scanTooltips()
+	{
+		this.clearTooltipBindings();
+
+		if (typeof document === 'undefined')
+		{
+			return;
+		}
+
+		let tmpState = this.pict.AppData.InlineDocumentation;
+
+		if (!tmpState)
+		{
+			return;
+		}
+
+		let tmpModal = this.pict.views['Pict-Section-Modal'];
+		let tmpElements = document.querySelectorAll('[data-d-tooltip]');
+		let tmpEditMode = tmpState.TooltipEditMode || false;
+
+		for (let i = 0; i < tmpElements.length; i++)
+		{
+			let tmpElement = tmpElements[i];
+			let tmpKey = tmpElement.getAttribute('data-d-tooltip');
+
+			if (!tmpKey)
+			{
+				continue;
+			}
+
+			let tmpContent = this.getTooltipContent(tmpKey);
+			let tmpIsIcon = tmpElement.hasAttribute('data-d-tooltip-icon');
+
+			let tmpBinding =
+			{
+				Element: tmpElement,
+				Key: tmpKey,
+				Type: tmpIsIcon ? 'icon' : 'attribute',
+				TooltipHandle: null,
+				ClickHandler: null,
+				InjectedIcon: null,
+				OriginalDisplay: undefined
+			};
+
+			if (tmpEditMode)
+			{
+				this._wireTooltipEditMode(tmpElement, tmpKey, tmpContent, tmpIsIcon, tmpBinding, tmpModal);
+			}
+			else
+			{
+				this._wireTooltipNormalMode(tmpElement, tmpKey, tmpContent, tmpIsIcon, tmpBinding, tmpModal);
+			}
+
+			this._ActiveTooltipBindings.push(tmpBinding);
+		}
+
+		// Install document-level click delegation for help: links in tooltips
+		this._installTooltipHelpLinkHandler();
+	}
+
+	/**
+	 * Install a document-level click handler for help links inside tooltips.
+	 *
+	 * Tooltip elements are created/destroyed dynamically by the modal system,
+	 * so we use event delegation on the document to catch clicks on
+	 * [rel^="pict-inline-doc-help:"] links wherever they appear.
+	 */
+	_installTooltipHelpLinkHandler()
+	{
+		if (typeof document === 'undefined')
+		{
+			return;
+		}
+
+		// Remove existing handler if any
+		if (this._tooltipHelpLinkHandler)
+		{
+			document.removeEventListener('click', this._tooltipHelpLinkHandler);
+		}
+
+		let tmpSelf = this;
+
+		this._tooltipHelpLinkHandler = (pEvent) =>
+		{
+			let tmpTarget = pEvent.target;
+
+			// Walk up to find the link element
+			while (tmpTarget && tmpTarget !== document)
+			{
+				if (tmpTarget.tagName === 'A' && tmpTarget.getAttribute('rel') && tmpTarget.getAttribute('rel').indexOf('pict-inline-doc-help:') === 0)
+				{
+					pEvent.preventDefault();
+					pEvent.stopPropagation();
+
+					let tmpPath = tmpTarget.getAttribute('rel').replace('pict-inline-doc-help:', '');
+					tmpSelf.loadDocument(tmpPath);
+					return;
+				}
+				tmpTarget = tmpTarget.parentNode;
+			}
+		};
+
+		document.addEventListener('click', this._tooltipHelpLinkHandler);
+	}
+
+	/**
+	 * Wire a tooltip element for normal (non-edit) mode.
+	 *
+	 * @param {HTMLElement} pElement - The placeholder element
+	 * @param {string} pKey - The tooltip key
+	 * @param {string|null} pContent - The tooltip content (or null)
+	 * @param {boolean} pIsIcon - Whether this is an icon-type placeholder
+	 * @param {Object} pBinding - The binding tracking object
+	 * @param {Object} pModal - The modal view instance
+	 */
+	_wireTooltipNormalMode(pElement, pKey, pContent, pIsIcon, pBinding, pModal)
+	{
+		if (pIsIcon)
+		{
+			if (pContent)
+			{
+				// Inject an icon and attach tooltip
+				let tmpIcon = this._createTooltipIcon(pElement);
+				pBinding.InjectedIcon = tmpIcon;
+
+				if (pModal && pModal.richTooltip)
+				{
+					let tmpHTML = this._ContentProvider.parseMarkdown(pContent, this._createTooltipLinkResolver());
+					pBinding.TooltipHandle = pModal.richTooltip(pElement, tmpHTML, { interactive: true, maxWidth: '350px' });
+				}
+			}
+			else
+			{
+				// No content — hide the span
+				pBinding.OriginalDisplay = pElement.style.display;
+				pElement.style.display = 'none';
+			}
+		}
+		else
+		{
+			// Attribute tooltip
+			if (pContent && pModal && pModal.richTooltip)
+			{
+				let tmpHTML = this._ContentProvider.parseMarkdown(pContent, this._createTooltipLinkResolver());
+				pBinding.TooltipHandle = pModal.richTooltip(pElement, tmpHTML, { interactive: true, maxWidth: '350px' });
+			}
+			// No content = do nothing, element stays as-is
+		}
+	}
+
+	/**
+	 * Wire a tooltip element for edit mode.
+	 *
+	 * @param {HTMLElement} pElement - The placeholder element
+	 * @param {string} pKey - The tooltip key
+	 * @param {string|null} pContent - The tooltip content (or null)
+	 * @param {boolean} pIsIcon - Whether this is an icon-type placeholder
+	 * @param {Object} pBinding - The binding tracking object
+	 * @param {Object} pModal - The modal view instance
+	 */
+	_wireTooltipEditMode(pElement, pKey, pContent, pIsIcon, pBinding, pModal)
+	{
+		// Add edit-mode indicator class
+		pElement.classList.add('pict-inline-doc-tooltip-edit-target');
+
+		if (pIsIcon)
+		{
+			// Always show icon in edit mode
+			let tmpIcon = this._createTooltipIcon(pElement);
+			pBinding.InjectedIcon = tmpIcon;
+
+			if (!pContent)
+			{
+				pElement.classList.add('pict-inline-doc-tooltip-empty');
+			}
+		}
+
+		// Click handler to open editor
+		let tmpSelf = this;
+		let tmpClickHandler = (pEvent) =>
+		{
+			pEvent.preventDefault();
+			pEvent.stopPropagation();
+			tmpSelf._showTooltipEditor(pKey);
+		};
+
+		pElement.addEventListener('click', tmpClickHandler);
+		pBinding.ClickHandler = tmpClickHandler;
+	}
+
+	/**
+	 * Create and inject a tooltip icon element into a span.
+	 *
+	 * @param {HTMLElement} pElement - The span element to inject into
+	 * @returns {HTMLElement} The created icon element
+	 */
+	_createTooltipIcon(pElement)
+	{
+		let tmpIcon = document.createElement('span');
+		tmpIcon.className = 'pict-inline-doc-tooltip-icon';
+
+		// Check for custom icon class
+		let tmpCustomClass = pElement.getAttribute('data-d-tooltip-icon');
+		if (tmpCustomClass && tmpCustomClass !== '')
+		{
+			tmpIcon.className += ' ' + tmpCustomClass;
+		}
+		else
+		{
+			tmpIcon.innerHTML = '&#x2753;';
+		}
+
+		pElement.appendChild(tmpIcon);
+		return tmpIcon;
+	}
+
+	/**
+	 * Show the tooltip content editor modal.
+	 *
+	 * @param {string} pTooltipKey - The tooltip key to edit
+	 */
+	_showTooltipEditor(pTooltipKey)
+	{
+		let tmpModal = this.pict.views['Pict-Section-Modal'];
+
+		if (!tmpModal)
+		{
+			return;
+		}
+
+		let tmpCurrentContent = this.getTooltipContent(pTooltipKey) || '';
+		let tmpSelf = this;
+
+		let tmpEditorHTML = '<div class="pict-inline-doc-tm-form-group">';
+		tmpEditorHTML += '<label class="pict-inline-doc-tm-form-label">Tooltip Key</label>';
+		tmpEditorHTML += '<div style="font-family:monospace;font-size:0.85em;color:#8A7F72;padding:0.3em 0;">' + this._escapeTooltipHTML(pTooltipKey) + '</div>';
+		tmpEditorHTML += '</div>';
+		tmpEditorHTML += '<div class="pict-inline-doc-tm-form-group">';
+		tmpEditorHTML += '<label class="pict-inline-doc-tm-form-label">Content (Markdown)</label>';
+		tmpEditorHTML += '<textarea class="pict-inline-doc-tooltip-editor-textarea" id="InlineDoc-Tooltip-Editor-Textarea">' + this._escapeTooltipHTML(tmpCurrentContent) + '</textarea>';
+		tmpEditorHTML += '</div>';
+		tmpEditorHTML += '<div class="pict-inline-doc-tooltip-preview-label">Preview</div>';
+		tmpEditorHTML += '<div class="pict-inline-doc-tooltip-preview" id="InlineDoc-Tooltip-Editor-Preview"></div>';
+
+		tmpModal.show(
+		{
+			title: 'Edit Tooltip',
+			content: tmpEditorHTML,
+			closeable: true,
+			width: '480px',
+			buttons:
+			[
+				{ Hash: 'cancel', Label: 'Cancel' },
+				{ Hash: 'save', Label: 'Save', Style: 'primary' }
+			],
+			onOpen: (pDialog) =>
+			{
+				let tmpTextarea = document.getElementById('InlineDoc-Tooltip-Editor-Textarea');
+				let tmpPreview = document.getElementById('InlineDoc-Tooltip-Editor-Preview');
+
+				if (tmpTextarea && tmpPreview)
+				{
+					// Initial preview
+					let tmpLinkResolver = tmpSelf._createTooltipLinkResolver();
+					let tmpInitialHTML = tmpCurrentContent ? tmpSelf._ContentProvider.parseMarkdown(tmpCurrentContent, tmpLinkResolver) : '<span style="color:#8A7F72;">No content yet.</span>';
+					tmpPreview.innerHTML = tmpInitialHTML;
+
+					// Live preview on input
+					tmpTextarea.addEventListener('input', () =>
+					{
+						let tmpValue = tmpTextarea.value.trim();
+						if (tmpValue)
+						{
+							tmpPreview.innerHTML = tmpSelf._ContentProvider.parseMarkdown(tmpValue, tmpLinkResolver);
+						}
+						else
+						{
+							tmpPreview.innerHTML = '<span style="color:#8A7F72;">No content yet.</span>';
+						}
+					});
+
+					tmpTextarea.focus();
+				}
+			}
+		}).then((pResult) =>
+		{
+			if (pResult === 'save')
+			{
+				let tmpTextarea = document.getElementById('InlineDoc-Tooltip-Editor-Textarea');
+				let tmpNewContent = tmpTextarea ? tmpTextarea.value.trim() : '';
+
+				tmpSelf.setTooltipContent(pTooltipKey, tmpNewContent || null);
+				tmpSelf.saveTopics();
+				tmpSelf.scanTooltips();
+
+				if (tmpModal.toast)
+				{
+					tmpModal.toast('Tooltip saved.', { type: 'success' });
+				}
+			}
+		});
+	}
+
+	/**
+	 * Escape HTML for safe insertion into tooltip editor.
+	 *
+	 * @param {string} pText - Text to escape
+	 * @returns {string} Escaped text
+	 */
+	_escapeTooltipHTML(pText)
+	{
+		if (!pText)
+		{
+			return '';
+		}
+		return pText
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;');
+	}
+
+	// -- Image upload --
+
+	/**
+	 * Wire the onImageUpload handler onto the markdown editor view.
+	 *
+	 * Overrides the editor's onImageUpload method so that when a user
+	 * drops or pastes an image, it is routed through the host app's
+	 * onImageUpload callback with the current document path for context.
+	 *
+	 * The host callback signature is:
+	 *   onImageUpload(pFile, pDocumentPath, fCallback)
+	 * where fCallback is fCallback(pError, pRelativeURL).
+	 */
+	_wireEditorImageUpload()
+	{
+		let tmpSelf = this;
+		let tmpEditorView = this.pict.views['InlineDoc-MarkdownEditor'];
+
+		if (!tmpEditorView)
+		{
+			return;
+		}
+
+		tmpEditorView.onImageUpload = (pFile, pSegmentIndex, fCallback) =>
+		{
+			if (typeof tmpSelf._onImageUpload !== 'function')
+			{
+				return false;
+			}
+
+			let tmpState = tmpSelf.pict.AppData.InlineDocumentation;
+			let tmpDocumentPath = (tmpState && tmpState.EditingPath) ? tmpState.EditingPath : '';
+
+			tmpSelf._onImageUpload(pFile, tmpDocumentPath, (pError, pURL) =>
+			{
+				if (pError)
+				{
+					tmpSelf.log.warn(`InlineDocumentation: Image upload failed: ${pError}`);
+				}
+				fCallback(pError, pURL);
+			});
+
+			return true;
+		};
+	}
+
+	/**
+	 * Scroll the content area to a heading that matches an anchor string.
+	 *
+	 * Looks for headings (h1-h6) in the content body whose text, when
+	 * slugified, matches the anchor. Uses the standard GitHub-style
+	 * slugification: lowercase, spaces to hyphens, strip non-alphanumeric.
+	 *
+	 * @param {string} pAnchor - The anchor string (without #)
+	 */
+	_scrollToAnchor(pAnchor)
+	{
+		if (typeof document === 'undefined' || !pAnchor)
+		{
+			return;
+		}
+
+		// Delay slightly to ensure content is rendered
+		setTimeout(() =>
+		{
+			let tmpContentBody = document.getElementById('InlineDoc-Content-Body');
+			if (!tmpContentBody)
+			{
+				return;
+			}
+
+			let tmpSlug = pAnchor.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+
+			// Check for an element with a matching id first
+			let tmpTarget = tmpContentBody.querySelector('#' + CSS.escape(tmpSlug));
+
+			// If no id match, search heading text
+			if (!tmpTarget)
+			{
+				let tmpHeadings = tmpContentBody.querySelectorAll('h1, h2, h3, h4, h5, h6');
+				for (let i = 0; i < tmpHeadings.length; i++)
+				{
+					let tmpHeadingText = tmpHeadings[i].textContent || '';
+					let tmpHeadingSlug = tmpHeadingText.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+					if (tmpHeadingSlug === tmpSlug)
+					{
+						tmpTarget = tmpHeadings[i];
+						break;
+					}
+				}
+			}
+
+			if (tmpTarget)
+			{
+				tmpTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+		}, 50);
+	}
+
 	// -- Internal methods --
 
 	/**
@@ -765,6 +1688,17 @@ class InlineDocumentationProvider extends libPictProvider
 				return { href: pHref, target: '_blank', rel: 'noopener' };
 			}
 
+			// help: prefix — internal documentation link (e.g. help:book-list.md#section)
+			if (pHref.match(/^help:/))
+			{
+				let tmpHelpPath = pHref.replace(/^help:/, '');
+				return {
+					href: 'javascript:void(0)',
+					target: '',
+					rel: 'pict-inline-doc-link:' + tmpHelpPath
+				};
+			}
+
 			// Internal doc link — mark for interception
 			let tmpPath = pHref.replace(/^\.\//, '').replace(/^\//, '');
 			return {
@@ -773,6 +1707,41 @@ class InlineDocumentationProvider extends libPictProvider
 				// The content view will wire up click interception
 				target: '',
 				rel: 'pict-inline-doc-link:' + tmpPath
+			};
+		};
+	}
+
+	/**
+	 * Create a link resolver for tooltip content.
+	 *
+	 * Handles help:path.md#anchor links that open documents in the help
+	 * panel. These links get a special rel attribute so click handlers
+	 * can intercept them.
+	 *
+	 * External links open in a new tab. All other links are treated as
+	 * help: links within the tooltip context.
+	 *
+	 * @returns {Function} A link resolver callback
+	 */
+	_createTooltipLinkResolver()
+	{
+		return (pHref, pLinkText) =>
+		{
+			// External links — open in new tab
+			if (pHref.match(/^https?:\/\//))
+			{
+				return { href: pHref, target: '_blank', rel: 'noopener' };
+			}
+
+			// Strip help: prefix if present
+			let tmpPath = pHref.replace(/^help:/, '');
+			// Clean relative prefixes
+			tmpPath = tmpPath.replace(/^\.\//, '').replace(/^\//, '');
+
+			return {
+				href: 'javascript:void(0)',
+				target: '',
+				rel: 'pict-inline-doc-help:' + tmpPath
 			};
 		};
 	}

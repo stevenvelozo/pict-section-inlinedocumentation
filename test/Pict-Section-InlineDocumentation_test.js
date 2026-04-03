@@ -610,5 +610,676 @@ suite
 				);
 			}
 		);
+
+		suite
+		(
+			'Topic CRUD',
+			() =>
+			{
+				test
+				(
+					'getTopicList should return array of topic summaries',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'TOPIC-A': { TopicCode: 'TOPIC-A', TopicTitle: 'Topic Alpha', TopicHelpFilePath: 'alpha.md', Routes: ['/alpha', '/alpha/*'] },
+							'TOPIC-B': { TopicCode: 'TOPIC-B', TopicTitle: 'Topic Beta', TopicHelpFilePath: 'beta.md', Routes: [] }
+						};
+
+						let tmpList = tmpProvider.getTopicList();
+
+						libAssert.ok(Array.isArray(tmpList), 'Should return an array');
+						libAssert.strictEqual(tmpList.length, 2, 'Should have 2 topics');
+						libAssert.strictEqual(tmpList[0].TopicCode, 'TOPIC-A');
+						libAssert.strictEqual(tmpList[0].TopicTitle, 'Topic Alpha');
+						libAssert.strictEqual(tmpList[0].TopicHelpFilePath, 'alpha.md');
+						libAssert.strictEqual(tmpList[0].RouteCount, 2);
+						libAssert.strictEqual(tmpList[1].RouteCount, 0);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'getTopicList should return empty array when no topics',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						let tmpList = tmpProvider.getTopicList();
+						libAssert.ok(Array.isArray(tmpList));
+						libAssert.strictEqual(tmpList.length, 0);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'updateTopic should merge only specified fields',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'MY-TOPIC': { TopicCode: 'MY-TOPIC', TopicTitle: 'Original', TopicHelpFilePath: 'orig.md', Routes: ['/orig'] }
+						};
+
+						let tmpResult = tmpProvider.updateTopic('MY-TOPIC', { TopicTitle: 'Updated Title' });
+
+						libAssert.strictEqual(tmpResult, true);
+						libAssert.strictEqual(tmpPict.AppData.InlineDocumentation.Topics['MY-TOPIC'].TopicTitle, 'Updated Title');
+						libAssert.strictEqual(tmpPict.AppData.InlineDocumentation.Topics['MY-TOPIC'].TopicHelpFilePath, 'orig.md');
+						libAssert.deepStrictEqual(tmpPict.AppData.InlineDocumentation.Topics['MY-TOPIC'].Routes, ['/orig']);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'updateTopic should return false for nonexistent topic',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {};
+
+						libAssert.strictEqual(tmpProvider.updateTopic('NOPE', { TopicTitle: 'Test' }), false);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'removeTopic should delete topic and clear active if matched',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'REMOVE-ME': { TopicCode: 'REMOVE-ME', TopicTitle: 'Doomed' }
+						};
+						tmpPict.AppData.InlineDocumentation.Topic = 'REMOVE-ME';
+
+						let tmpResult = tmpProvider.removeTopic('REMOVE-ME');
+
+						libAssert.strictEqual(tmpResult, true);
+						libAssert.strictEqual(tmpPict.AppData.InlineDocumentation.Topics['REMOVE-ME'], undefined);
+						libAssert.strictEqual(tmpPict.AppData.InlineDocumentation.Topic, null);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'removeTopic should return false for nonexistent topic',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {};
+
+						libAssert.strictEqual(tmpProvider.removeTopic('NOPE'), false);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'removeRouteFromTopic should splice route from array',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'TOPIC-X': { TopicCode: 'TOPIC-X', Routes: ['/one', '/two', '/three'] }
+						};
+
+						libAssert.strictEqual(tmpProvider.removeRouteFromTopic('TOPIC-X', '/two'), true);
+						libAssert.deepStrictEqual(tmpPict.AppData.InlineDocumentation.Topics['TOPIC-X'].Routes, ['/one', '/three']);
+						libAssert.strictEqual(tmpProvider.removeRouteFromTopic('TOPIC-X', '/two'), false);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'saveTopics should call onTopicsSave callback',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'TEST': { TopicCode: 'TEST', TopicTitle: 'Test' }
+						};
+
+						let tmpSavedTopics = null;
+						tmpProvider._onTopicsSave = (pTopics, fCallback) =>
+						{
+							tmpSavedTopics = pTopics;
+							fCallback(null);
+						};
+
+						tmpProvider.saveTopics((pError) =>
+						{
+							libAssert.strictEqual(pError, null);
+							libAssert.ok(tmpSavedTopics);
+							libAssert.ok(tmpSavedTopics['TEST']);
+							return fDone();
+						});
+					}
+				);
+
+				test
+				(
+					'saveTopics should succeed without callback handler',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {};
+
+						tmpProvider.saveTopics((pError) =>
+						{
+							libAssert.strictEqual(pError, null);
+							return fDone();
+						});
+					}
+				);
+
+				test
+				(
+					'setTopicManagerEnabled should update state',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+
+						tmpProvider.setTopicManagerEnabled(true);
+						libAssert.strictEqual(tmpPict.AppData.InlineDocumentation.TopicManagerEnabled, true);
+
+						tmpProvider.setTopicManagerEnabled(false);
+						libAssert.strictEqual(tmpPict.AppData.InlineDocumentation.TopicManagerEnabled, false);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'Provider should have topic CRUD API methods',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						libAssert.strictEqual(typeof tmpProvider.getTopicList, 'function');
+						libAssert.strictEqual(typeof tmpProvider.updateTopic, 'function');
+						libAssert.strictEqual(typeof tmpProvider.removeTopic, 'function');
+						libAssert.strictEqual(typeof tmpProvider.removeRouteFromTopic, 'function');
+						libAssert.strictEqual(typeof tmpProvider.saveTopics, 'function');
+						libAssert.strictEqual(typeof tmpProvider.setTopicManagerEnabled, 'function');
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'TopicManager view should be registered',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						libAssert.ok(tmpPict.views['InlineDoc-TopicManager'], 'TopicManager view should be registered');
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'Module should export TopicManager view class',
+					(fDone) =>
+					{
+						libAssert.strictEqual(typeof libInlineDocumentation.InlineDocumentationTopicManagerView, 'function');
+						return fDone();
+					}
+				);
+			}
+		);
+
+		suite
+		(
+			'Wildcard Builder Helpers',
+			() =>
+			{
+				test
+				(
+					'getRouteSegments should split route into segments',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						let tmpSegments = tmpProvider.getRouteSegments('/books/detail/5');
+
+						libAssert.strictEqual(tmpSegments.length, 3);
+
+						libAssert.strictEqual(tmpSegments[0].Segment, 'books');
+						libAssert.strictEqual(tmpSegments[0].Path, '/books');
+						libAssert.strictEqual(tmpSegments[0].WildcardPattern, '/books/*');
+						libAssert.strictEqual(tmpSegments[0].Index, 0);
+
+						libAssert.strictEqual(tmpSegments[1].Segment, 'detail');
+						libAssert.strictEqual(tmpSegments[1].Path, '/books/detail');
+						libAssert.strictEqual(tmpSegments[1].WildcardPattern, '/books/detail/*');
+						libAssert.strictEqual(tmpSegments[1].Index, 1);
+
+						libAssert.strictEqual(tmpSegments[2].Segment, '5');
+						libAssert.strictEqual(tmpSegments[2].Path, '/books/detail/5');
+						libAssert.strictEqual(tmpSegments[2].WildcardPattern, '/books/detail/5/*');
+						libAssert.strictEqual(tmpSegments[2].Index, 2);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'getRouteSegments should return empty array for empty/invalid input',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						libAssert.deepStrictEqual(tmpProvider.getRouteSegments(''), []);
+						libAssert.deepStrictEqual(tmpProvider.getRouteSegments(null), []);
+						libAssert.deepStrictEqual(tmpProvider.getRouteSegments(undefined), []);
+						libAssert.deepStrictEqual(tmpProvider.getRouteSegments('/'), []);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'buildWildcardPattern should create correct patterns',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						libAssert.strictEqual(tmpProvider.buildWildcardPattern('/books/detail/5', 0), '/books/*');
+						libAssert.strictEqual(tmpProvider.buildWildcardPattern('/books/detail/5', 1), '/books/detail/*');
+						libAssert.strictEqual(tmpProvider.buildWildcardPattern('/books/detail/5', 2), '/books/detail/5/*');
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'buildWildcardPattern should return empty string for invalid input',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						libAssert.strictEqual(tmpProvider.buildWildcardPattern('', 0), '');
+						libAssert.strictEqual(tmpProvider.buildWildcardPattern('/books', -1), '');
+						libAssert.strictEqual(tmpProvider.buildWildcardPattern('/books', 5), '');
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'getTopicsForRoute should return all matching topics sorted by match length',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'BOOKS': { TopicCode: 'BOOKS', Routes: ['/books/*'] },
+							'STORE': { TopicCode: 'STORE', Routes: ['/books/store/*'] },
+							'SETTINGS': { TopicCode: 'SETTINGS', Routes: ['/settings'] }
+						};
+
+						let tmpMatches = tmpProvider.getTopicsForRoute('/books/store/5');
+
+						libAssert.strictEqual(tmpMatches.length, 2);
+						libAssert.strictEqual(tmpMatches[0].TopicCode, 'STORE');
+						libAssert.strictEqual(tmpMatches[1].TopicCode, 'BOOKS');
+
+						return fDone();
+					}
+				);
+			}
+		);
+
+		suite
+		(
+			'Tooltip Content',
+			() =>
+			{
+				test
+				(
+					'getTooltipContent should return content from active topic',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'HELP-TOPIC': {
+								TopicCode: 'HELP-TOPIC',
+								TopicTitle: 'Help',
+								Tooltips: {
+									'field_name': { Content: '**Bold** help text' },
+									'empty_tip': { Content: '' }
+								}
+							}
+						};
+						tmpPict.AppData.InlineDocumentation.Topic = 'HELP-TOPIC';
+
+						libAssert.strictEqual(tmpProvider.getTooltipContent('field_name'), '**Bold** help text');
+						libAssert.strictEqual(tmpProvider.getTooltipContent('empty_tip'), null);
+						libAssert.strictEqual(tmpProvider.getTooltipContent('nonexistent'), null);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'getTooltipContent should return null when no active topic',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'HELP-TOPIC': {
+								TopicCode: 'HELP-TOPIC',
+								Tooltips: { 'tip': { Content: 'Some content' } }
+							}
+						};
+						tmpPict.AppData.InlineDocumentation.Topic = null;
+
+						libAssert.strictEqual(tmpProvider.getTooltipContent('tip'), null);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'getTooltipContent should return null when topic has no Tooltips',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'NO-TIPS': { TopicCode: 'NO-TIPS', TopicTitle: 'No Tips' }
+						};
+						tmpPict.AppData.InlineDocumentation.Topic = 'NO-TIPS';
+
+						libAssert.strictEqual(tmpProvider.getTooltipContent('anything'), null);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'setTooltipContent should create Tooltips hash lazily',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'MY-TOPIC': { TopicCode: 'MY-TOPIC', TopicTitle: 'Test' }
+						};
+						tmpPict.AppData.InlineDocumentation.Topic = 'MY-TOPIC';
+
+						let tmpResult = tmpProvider.setTooltipContent('new_tip', 'Hello world');
+
+						libAssert.strictEqual(tmpResult, true);
+						libAssert.ok(tmpPict.AppData.InlineDocumentation.Topics['MY-TOPIC'].Tooltips);
+						libAssert.strictEqual(
+							tmpPict.AppData.InlineDocumentation.Topics['MY-TOPIC'].Tooltips['new_tip'].Content,
+							'Hello world');
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'setTooltipContent should remove entry when content is null',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {
+							'MY-TOPIC': {
+								TopicCode: 'MY-TOPIC',
+								Tooltips: { 'old_tip': { Content: 'Remove me' } }
+							}
+						};
+						tmpPict.AppData.InlineDocumentation.Topic = 'MY-TOPIC';
+
+						libAssert.strictEqual(tmpProvider.setTooltipContent('old_tip', null), true);
+						libAssert.strictEqual(
+							tmpPict.AppData.InlineDocumentation.Topics['MY-TOPIC'].Tooltips['old_tip'],
+							undefined);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'setTooltipContent should return false when no active topic',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider.setDocsBaseURL('/docs/');
+						tmpPict.AppData.InlineDocumentation.Topics = {};
+						tmpPict.AppData.InlineDocumentation.Topic = null;
+
+						libAssert.strictEqual(tmpProvider.setTooltipContent('tip', 'content'), false);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'clearTooltipBindings should empty the bindings array',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						tmpProvider._ActiveTooltipBindings.push(
+						{
+							Element: null,
+							Key: 'test',
+							Type: 'attribute',
+							TooltipHandle: null,
+							ClickHandler: null,
+							InjectedIcon: null,
+							OriginalDisplay: undefined
+						});
+
+						libAssert.strictEqual(tmpProvider._ActiveTooltipBindings.length, 1);
+						tmpProvider.clearTooltipBindings();
+						libAssert.strictEqual(tmpProvider._ActiveTooltipBindings.length, 0);
+
+						return fDone();
+					}
+				);
+
+				test
+				(
+					'Provider should have tooltip API methods',
+					(fDone) =>
+					{
+						let tmpPict = new libPict({ Product: 'InlineDocTest' });
+
+						let tmpProvider = tmpPict.addProvider(
+							'Pict-InlineDocumentation',
+							libInlineDocumentation.default_configuration,
+							libInlineDocumentation);
+
+						libAssert.strictEqual(typeof tmpProvider.getTooltipContent, 'function');
+						libAssert.strictEqual(typeof tmpProvider.setTooltipContent, 'function');
+						libAssert.strictEqual(typeof tmpProvider.clearTooltipBindings, 'function');
+						libAssert.strictEqual(typeof tmpProvider.scanTooltips, 'function');
+
+						return fDone();
+					}
+				);
+			}
+		);
 	}
 );
