@@ -1,5 +1,5 @@
 {
-	"Generated": "2026-04-09T21:43:15.047Z",
+	"Generated": "2026-04-09T23:34:57.049Z",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
 	"Groups": [
@@ -12,6 +12,163 @@
 					"Name": "indoctrinate_content_staging",
 					"Repo": "indoctrinate_content_staging",
 					"Group": "dist",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "test-artifacts",
+					"Repo": "test-artifacts",
+					"Group": "dist",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Docs",
+			"Key": "docs",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "css",
+					"Repo": "css",
+					"Group": "docs",
+					"Branch": "master",
+					"HasDocs": true,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": [
+						"css/docuserve.css"
+					]
+				}
+			]
+		},
+		{
+			"Name": "Example_applications",
+			"Key": "example_applications",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": ".data",
+					"Repo": ".data",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "basic",
+					"Repo": "basic",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": true,
+					"HasCover": false,
+					"Sidebar": [
+						{
+							"Title": "Home",
+							"Path": "README.md"
+						},
+						{
+							"Title": "Guide",
+							"Children": [
+								{
+									"Title": "Getting Started",
+									"Path": "getting-started.md"
+								},
+								{
+									"Title": "Advanced Topics",
+									"Path": "advanced-topics.md"
+								}
+							]
+						}
+					],
+					"DocFiles": [
+						"README.md",
+						"_sidebar.md",
+						"_topics.json",
+						"advanced-topics.md",
+						"getting-started.md"
+					]
+				},
+				{
+					"Name": "bookshop",
+					"Repo": "bookshop",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": true,
+					"HasCover": false,
+					"Sidebar": [
+						{
+							"Title": "Welcome",
+							"Path": "welcome.md"
+						},
+						{
+							"Title": "Using the Bookshop",
+							"Children": [
+								{
+									"Title": "Book Catalog",
+									"Path": "book-list.md"
+								},
+								{
+									"Title": "Book Details",
+									"Path": "book-detail.md"
+								},
+								{
+									"Title": "Store Page",
+									"Path": "store.md"
+								},
+								{
+									"Title": "Search & Filter",
+									"Path": "search-filter.md"
+								}
+							]
+						}
+					],
+					"DocFiles": [
+						"_sidebar.md",
+						"book-detail.md",
+						"book-list.md",
+						"pict_documentation_topics.json",
+						"search-filter.md",
+						"store.md",
+						"welcome.md",
+						"_sidebar.md",
+						"book-detail.md",
+						"book-list.md",
+						"search-filter.md",
+						"store.md",
+						"welcome.md"
+					]
+				}
+			]
+		},
+		{
+			"Name": "Source",
+			"Key": "source",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "providers",
+					"Repo": "providers",
+					"Group": "source",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				},
+				{
+					"Name": "views",
+					"Repo": "views",
+					"Group": "source",
 					"Branch": "master",
 					"HasDocs": false,
 					"HasCover": false,
