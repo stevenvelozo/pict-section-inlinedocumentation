@@ -1,6 +1,6 @@
 # Overview
 
-`pict-section-inlinedocumentation` is a Pict section — a composable, self-contained view module — that turns a folder of Markdown files into live, context-aware documentation inside any Pict application. It lets you go from "no help at all" to "every field has a tooltip and every screen has a help pane" without rewriting your app.
+`pict-section-inlinedocumentation` is a Pict section -- a composable, self-contained view module -- that turns a folder of Markdown files into live, context-aware documentation inside any Pict application. It lets you go from "no help at all" to "every field has a tooltip and every screen has a help pane" without rewriting your app.
 
 ## What It Does
 
@@ -12,7 +12,7 @@
 
 ## Why It Exists
 
-Most applications bolt documentation on the side — a separate site, a separate deploy, stale the day it ships. `pict-section-inlinedocumentation` treats docs as a runtime dependency of the UI: the same content loaded by `pict-docuserve` for your public docs site can be embedded directly in the running app, and individual topics can be addressed by fragment to power inline tooltips.
+Most applications bolt documentation on the side -- a separate site, a separate deploy, stale the day it ships. `pict-section-inlinedocumentation` treats docs as a runtime dependency of the UI: the same content loaded by `pict-docuserve` for your public docs site can be embedded directly in the running app, and individual topics can be addressed by fragment to power inline tooltips.
 
 ## Four Levels of Embeddedness
 

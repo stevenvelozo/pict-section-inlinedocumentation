@@ -90,6 +90,6 @@ Every hash in the manifest becomes a topic key. Missing topics are created as st
 
 ## Next Steps
 
-- [Architecture](#/page/architecture.md) — how the pieces fit together
-- [API Reference](#/page/api-reference.md) — every exposed function with code snippets
+- [Architecture](#/page/architecture.md) -- how the pieces fit together
+- [API Reference](#/page/api-reference.md) -- every exposed function with code snippets
 - [Embedding Level 1: Sidebar](#/page/embedding-level1-sidebar.md) through [Level 4: Auto-Gen](#/page/embedding-level4-autogen.md)

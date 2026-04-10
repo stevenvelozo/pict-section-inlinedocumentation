@@ -95,7 +95,7 @@ _Pict.views.InlineDocumentation.unbindTooltips('#CustomerForm');
 
 ## `showTooltip(pElement, pTopicKey)`
 
-Imperatively shows a tooltip — handy for validation errors that carry a topic reference.
+Imperatively shows a tooltip -- handy for validation errors that carry a topic reference.
 
 ```js
 const tmpInput = document.getElementById('CustomerEmail');
@@ -170,12 +170,12 @@ await fetch('/api/docs/batch', { method: 'POST', body: JSON.stringify(tmpEdits) 
 
 Emits lifecycle events:
 
-- `topic-loaded` — `{ TopicKey, Topic }`
-- `topic-rendered` — `{ TopicKey, Container }`
-- `tooltip-shown` — `{ Element, TopicKey }`
-- `tooltip-hidden` — `{ Element }`
-- `catalog-loaded` — `{ Catalog }`
-- `topic-edited` — `{ TopicKey, Topic }` (edit mode only)
+- `topic-loaded` -- `{ TopicKey, Topic }`
+- `topic-rendered` -- `{ TopicKey, Container }`
+- `tooltip-shown` -- `{ Element, TopicKey }`
+- `tooltip-hidden` -- `{ Element }`
+- `catalog-loaded` -- `{ Catalog }`
+- `topic-edited` -- `{ TopicKey, Topic }` (edit mode only)
 
 ```js
 _Pict.views.InlineDocumentation.on('topic-rendered', ({ TopicKey }) =>

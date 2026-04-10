@@ -1,6 +1,6 @@
-# Level 3 — Hand-Authored Tooltips on Specific Features
+# Level 3 -- Hand-Authored Tooltips on Specific Features
 
-Now the help comes to the user. Individual fields, buttons, column headers, and icons get their own tooltip, each backed by a named topic. You write each topic by hand — so the content is as rich as you like, with Markdown, lists, even Mermaid diagrams.
+Now the help comes to the user. Individual fields, buttons, column headers, and icons get their own tooltip, each backed by a named topic. You write each topic by hand -- so the content is as rich as you like, with Markdown, lists, even Mermaid diagrams.
 
 Good for: forms with non-obvious fields, dashboards with domain-specific metrics, anywhere power users live.
 

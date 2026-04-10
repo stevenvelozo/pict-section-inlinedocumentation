@@ -1,6 +1,6 @@
-# Level 1 — Sidebar + Table of Contents
+# Level 1 -- Sidebar + Table of Contents
 
-The lightest touch. You drop in a sidebar that lists every topic in your docs corpus and lets the user click through. No route mapping, no tooltips, no manifest wiring — just a reading surface.
+The lightest touch. You drop in a sidebar that lists every topic in your docs corpus and lets the user click through. No route mapping, no tooltips, no manifest wiring -- just a reading surface.
 
 Good for: internal tools, admin panels, anything where "there's a help pane in the corner" is enough.
 
@@ -55,7 +55,7 @@ document.getElementById('HelpToggleButton').addEventListener('click', () =>
 });
 ```
 
-The section doesn't care whether its container is visible — it only renders when asked.
+The section doesn't care whether its container is visible -- it only renders when asked.
 
 ## Grouping and Ordering
 

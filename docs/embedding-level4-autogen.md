@@ -1,12 +1,12 @@
-# Level 4 — Auto-Generated Tooltips for Every Editable Control
+# Level 4 -- Auto-Generated Tooltips for Every Editable Control
 
-The deepest integration. Every control in your application that is managed by a [Manyfest](/utility/manyfest/) descriptor gets a tooltip automatically, with zero `data-help` markup. Missing topics are materialized as stubs on the fly. When a privileged user enters **edit mode**, they can click any tooltip to open an inline editor and write the copy right there in the running app — no repo checkouts, no deploys.
+The deepest integration. Every control in your application that is managed by a [Manyfest](/utility/manyfest/) descriptor gets a tooltip automatically, with zero `data-help` markup. Missing topics are materialized as stubs on the fly. When a privileged user enters **edit mode**, they can click any tooltip to open an inline editor and write the copy right there in the running app -- no repo checkouts, no deploys.
 
 Good for: mature products with a content-owning team that isn't going to wait for engineering to merge every typo fix.
 
 ## Prerequisites
 
-- Levels 1–3 are in place (you don't need to have used them, but the API is shared).
+- Levels 1-3 are in place (you don't need to have used them, but the API is shared).
 - Your form is built from a Manyfest descriptor. Anything produced by `pict-form` or `meadow-endpoints`' schema exporter qualifies.
 - You have an identity provider with a role that identifies "content editors".
 - An HTTP endpoint that accepts edited topic payloads (typically `retold-content-system` or similar).
@@ -65,9 +65,9 @@ Running the generator against this produces `customers/customer.email` and `cust
 
 In edit mode, the tooltip's footer shows three affordances:
 
-- **Edit** — opens the in-place editor
-- **Open in docs** — opens the topic in the sidebar for full-length editing
-- **Revert** — drops the in-memory edit and reloads the original
+- **Edit** -- opens the in-place editor
+- **Open in docs** -- opens the topic in the sidebar for full-length editing
+- **Revert** -- drops the in-memory edit and reloads the original
 
 The editor renders a side-by-side Markdown preview using the same `TopicRenderer` as the reading pane, so what the editor sees is exactly what end-users will see.
 
@@ -120,7 +120,7 @@ _Pict.views.InlineDocumentation.on('topic-edited', (pEvent) =>
 
 ## Guard Rails
 
-- Stubs are never silently promoted to "real" topics — they must be explicitly saved.
+- Stubs are never silently promoted to "real" topics -- they must be explicitly saved.
 - Edit mode is opt-in per page; `EditMode: false` renders regular tooltips with no editing affordances at all.
 - `EditEndpoint` is required for persistence; omitting it means stubs stay in memory for the session only (useful for demos).
 - All edited Markdown runs through the same safe renderer as imported content; script tags and `javascript:` URLs are stripped before display.

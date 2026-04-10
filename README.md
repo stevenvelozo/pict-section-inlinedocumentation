@@ -2,7 +2,7 @@
 
 > Embed context-aware documentation and tooltip help directly inside any Pict application.
 
-A Pict section that turns a folder of Markdown files into in-app help. Ships four progressively deeper embedding modes: a drop-in sidebar with a table of contents, route-mapped reading panes, hand-authored tooltips on specific controls, and auto-generated tooltips for every Manyfest-managed control in your app — editable live when a content owner is signed in.
+A Pict section that turns a folder of Markdown files into in-app help. Ships four progressively deeper embedding modes: a drop-in sidebar with a table of contents, route-mapped reading panes, hand-authored tooltips on specific controls, and auto-generated tooltips for every Manyfest-managed control in your app -- editable live when a content owner is signed in.
 
 Part of the [Retold](https://github.com/stevenvelozo/retold) suite.
 
@@ -104,4 +104,4 @@ npx quack prepare-docs
 
 ## License
 
-[MIT](./LICENSE) — same as the rest of the Retold suite.
+[MIT](./LICENSE) -- same as the rest of the Retold suite.

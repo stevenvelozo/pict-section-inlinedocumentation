@@ -35,11 +35,11 @@ pict-section-inlinedocumentation/
 ## Class Summary
 
 - **`PictSectionInlineDocumentation`** extends `libPictViewClass`. Holds config, instantiates services, exposes the public API.
-- **`TopicStore`** — loader, cache, search.
-- **`TopicRenderer`** — Markdown to HTML with Pict template integration.
-- **`TooltipBinder`** — DOM event + observer wiring.
-- **`AutoTooltipGenerator`** — Manyfest walker.
-- **`SidebarView`**, **`ReadingPaneView`**, **`TooltipView`** — `pict-view` subclasses, one per rendered surface.
+- **`TopicStore`** -- loader, cache, search.
+- **`TopicRenderer`** -- Markdown to HTML with Pict template integration.
+- **`TooltipBinder`** -- DOM event + observer wiring.
+- **`AutoTooltipGenerator`** -- Manyfest walker.
+- **`SidebarView`**, **`ReadingPaneView`**, **`TooltipView`** -- `pict-view` subclasses, one per rendered surface.
 
 ## Configuration Schema
 
@@ -68,6 +68,6 @@ pict-section-inlinedocumentation/
 
 ## Extending
 
-- **Custom renderers** — subclass `TopicRenderer` and set `RendererClass` in config.
-- **Custom tooltip UI** — subclass `TooltipView`; set `TooltipViewClass` in config.
-- **Alternate storage** — implement the `TopicStore` interface (`loadCatalogAsync`, `loadTopicAsync`, `searchAsync`) and pass it as `TopicStoreInstance`.
+- **Custom renderers** -- subclass `TopicRenderer` and set `RendererClass` in config.
+- **Custom tooltip UI** -- subclass `TooltipView`; set `TooltipViewClass` in config.
+- **Alternate storage** -- implement the `TopicStore` interface (`loadCatalogAsync`, `loadTopicAsync`, `searchAsync`) and pass it as `TopicStoreInstance`.

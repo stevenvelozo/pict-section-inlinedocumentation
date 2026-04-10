@@ -1,4 +1,4 @@
-# Level 2 — Route-Mapped Content
+# Level 2 -- Route-Mapped Content
 
 Now the help pane knows where the user is. As they navigate, the reading surface automatically switches to the topic that describes the screen they're looking at. The user never has to search.
 

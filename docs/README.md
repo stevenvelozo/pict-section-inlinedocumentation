@@ -2,7 +2,7 @@
 
 > Embed context-aware documentation and tooltip help directly inside any Pict application.
 
-`pict-section-inlinedocumentation` is a Pict section that turns a folder of Markdown topics into in-app help. It spans the full spectrum from "a sidebar with a table of contents" to "every editable control on every screen has a live, editable tooltip" — and you pick the level that matches your product.
+`pict-section-inlinedocumentation` is a Pict section that turns a folder of Markdown topics into in-app help. It spans the full spectrum from "a sidebar with a table of contents" to "every editable control on every screen has a live, editable tooltip" -- and you pick the level that matches your product.
 
 Part of the [Retold](https://github.com/stevenvelozo/retold) suite. Uses [`pict-view`](/pict/pict-view/) as its base, optionally consumes catalogs from [`pict-docuserve`](/pict/pict-docuserve/), and at the deepest level pairs with [`manyfest`](/utility/manyfest/) to auto-generate tooltips for every descriptor in your model.
 
@@ -26,18 +26,18 @@ Each level is a strict superset of the one before it.
 
 Published with [`pict-docuserve`](/pict/pict-docuserve/). Open `docs/index.html` locally, or browse the source Markdown:
 
-- **[Overview](overview.md)** — what it does and why
-- **[Quickstart](quickstart.md)** — sidebar running in five minutes
-- **[Architecture](architecture.md)** — services, views, lifecycle, with a Mermaid diagram
-- **[Implementation Reference](reference.md)** — source tree tour
-- **[API Reference](api-reference.md)** — every exposed function with a runnable snippet
+- **[Overview](overview.md)** -- what it does and why
+- **[Quickstart](quickstart.md)** -- sidebar running in five minutes
+- **[Architecture](architecture.md)** -- services, views, lifecycle, with a Mermaid diagram
+- **[Implementation Reference](reference.md)** -- source tree tour
+- **[API Reference](api-reference.md)** -- every exposed function with a runnable snippet
 
 ### Embedding Guides
 
-- **[Level 1 — Sidebar + ToC](embedding-level1-sidebar.md)** — least embedded
-- **[Level 2 — Route-Mapped Content](embedding-level2-routes.md)** — more embedded
-- **[Level 3 — Hand-Authored Tooltips](embedding-level3-tooltips.md)** — somewhat embedded
-- **[Level 4 — Auto-Generated Tooltips](embedding-level4-autogen.md)** — most embedded
+- **[Level 1 -- Sidebar + ToC](embedding-level1-sidebar.md)** -- least embedded
+- **[Level 2 -- Route-Mapped Content](embedding-level2-routes.md)** -- more embedded
+- **[Level 3 -- Hand-Authored Tooltips](embedding-level3-tooltips.md)** -- somewhat embedded
+- **[Level 4 -- Auto-Generated Tooltips](embedding-level4-autogen.md)** -- most embedded
 
 ## Installation
 
@@ -75,9 +75,9 @@ _Pict.onAfterInitializeAsync = async () =>
 | [pict-view](/pict/pict-view/) | Base view class |
 | [pict-router](/pict/pict-router/) | Source of route change events for Level 2 |
 | [pict-docuserve](/pict/pict-docuserve/) | Produces the catalog and keyword index consumed by this section |
-| [pict-template-markdown](/pict/pict-template-markdown/) | Markdown → HTML renderer |
+| [pict-template-markdown](/pict/pict-template-markdown/) | Markdown -> HTML renderer |
 | [manyfest](/utility/manyfest/) | Descriptors walked by Level 4 auto-generation |
 
 ## License
 
-MIT — same as the rest of the Retold suite.
+MIT -- same as the rest of the Retold suite.
