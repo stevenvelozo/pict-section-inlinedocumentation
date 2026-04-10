@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"pict": "^1.0.361",
 		"puppeteer": "^24.40.0",
-		"quackage": "^1.0.65"
+		"quackage": "^1.1.0"
 	},
 	"mocha": {
 		"diff": true,
