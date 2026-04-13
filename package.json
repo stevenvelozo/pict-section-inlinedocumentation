@@ -25,7 +25,7 @@
 		"pict-provider": "^1.0.12",
 		"pict-section-content": "^0.1.5",
 		"pict-section-markdowneditor": "^1.0.9",
-		"pict-section-modal": "^0.0.2",
+		"pict-section-modal": "^0.0.4",
 		"pict-view": "^1.0.68"
 	},
 	"devDependencies": {
