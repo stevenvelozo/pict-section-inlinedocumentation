@@ -5,7 +5,7 @@ const _ViewConfiguration =
 	ViewIdentifier: "InlineDoc-Nav",
 
 	DefaultRenderable: "InlineDoc-Nav-Display",
-	DefaultDestinationAddress: "#InlineDoc-Nav-Container",
+	DefaultContentDestinationAddress: "#InlineDoc-Nav-Container",
 
 	AutoRender: false,
 
@@ -189,7 +189,7 @@ const _ViewConfiguration =
 		{
 			RenderableHash: "InlineDoc-Nav-Display",
 			TemplateHash: "InlineDoc-Nav-Template",
-			DestinationAddress: "#InlineDoc-Nav-Container",
+			ContentDestinationAddress: "#InlineDoc-Nav-Container",
 			RenderMethod: "replace"
 		}
 	]
@@ -265,7 +265,7 @@ class InlineDocumentationNavView extends libPictView
 
 			tmpHTML += '<div class="pict-inline-doc-nav-topic-badge">'
 				+ this._escapeHTML(tmpTopicName)
-				+ '<span class="pict-inline-doc-nav-topic-clear" id="InlineDoc-Nav-ClearTopic">&#x2715;</span>'
+				+ '<span class="pict-inline-doc-nav-topic-clear" id="InlineDoc-Nav-ClearTopic"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg></span>'
 				+ '</div>';
 		}
 
@@ -273,13 +273,13 @@ class InlineDocumentationNavView extends libPictView
 		if (tmpState.TopicManagerEnabled)
 		{
 			tmpHTML += '<div class="pict-inline-doc-nav-toolbar">';
-			tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn" id="InlineDoc-Nav-ManageTopics" title="Manage Topics">&#x2699;</button>';
+			tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn" id="InlineDoc-Nav-ManageTopics" title="Manage Topics"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg></button>';
 			if (tmpState.CurrentRoute)
 			{
-				tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn accent" id="InlineDoc-Nav-BindTopic" title="Bind topic to current route">&#x1F517;</button>';
+				tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn accent" id="InlineDoc-Nav-BindTopic" title="Bind topic to current route"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 9.5a3.5 3.5 0 005 0l2-2a3.5 3.5 0 00-5-5l-1 1"/><path d="M9.5 6.5a3.5 3.5 0 00-5 0l-2 2a3.5 3.5 0 005 5l1-1"/></svg></button>';
 			}
 			let tmpTooltipEditActive = tmpState.TooltipEditMode ? ' active' : '';
-			tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn' + tmpTooltipEditActive + '" id="InlineDoc-Nav-TooltipEditMode" title="Toggle tooltip edit mode">&#x1F4AC;</button>';
+			tmpHTML += '<button class="pict-inline-doc-nav-toolbar-btn' + tmpTooltipEditActive + '" id="InlineDoc-Nav-TooltipEditMode" title="Toggle tooltip edit mode"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10a1.5 1.5 0 01-1.5 1.5H4l-3 3V3A1.5 1.5 0 012.5 1.5h10A1.5 1.5 0 0114 3z"/></svg></button>';
 			tmpHTML += '<span class="pict-inline-doc-nav-toolbar-spacer"></span>';
 			tmpHTML += '</div>';
 		}

@@ -55,7 +55,7 @@ class InlineDocumentationProvider extends libPictProvider
 			{
 				RenderableHash: 'MarkdownEditor-Wrap',
 				TemplateHash: 'MarkdownEditor-Container',
-				DestinationAddress: '#InlineDoc-Editor-Container'
+				ContentDestinationAddress: '#InlineDoc-Editor-Container'
 			}
 		];
 		this.pict.addViewSingleton('InlineDoc-MarkdownEditor', tmpEditorConfig, libPictSectionMarkdownEditor);
@@ -137,7 +137,7 @@ class InlineDocumentationProvider extends libPictProvider
 			{
 				for (let i = 0; i < tmpLayoutView.options.Renderables.length; i++)
 				{
-					tmpLayoutView.options.Renderables[i].DestinationAddress = tmpOptions.ContainerAddress;
+					tmpLayoutView.options.Renderables[i].ContentDestinationAddress = tmpOptions.ContainerAddress;
 				}
 			}
 		}

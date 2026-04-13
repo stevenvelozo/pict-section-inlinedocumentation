@@ -5,7 +5,7 @@ const _ViewConfiguration =
 	ViewIdentifier: "InlineDoc-Content",
 
 	DefaultRenderable: "InlineDoc-Content-Display",
-	DefaultDestinationAddress: "#InlineDoc-Content-Container",
+	DefaultContentDestinationAddress: "#InlineDoc-Content-Container",
 
 	AutoRender: false,
 
@@ -286,9 +286,9 @@ const _ViewConfiguration =
 			Template: /*html*/`
 <div class="pict-inline-doc-edit-toolbar" id="InlineDoc-Edit-Toolbar">
 	<span class="edit-label" id="InlineDoc-Edit-Label">View mode</span>
-	<button class="pict-inline-doc-edit-btn" id="InlineDoc-Edit-Toggle" title="Edit this document"><span class="btn-icon">&#x270E;</span> Edit</button>
-	<button class="pict-inline-doc-edit-btn primary" id="InlineDoc-Edit-Save" style="display:none"><span class="btn-icon">&#x2713;</span> Save</button>
-	<button class="pict-inline-doc-edit-btn" id="InlineDoc-Edit-Cancel" style="display:none"><span class="btn-icon">&#x2717;</span> Cancel</button>
+	<button class="pict-inline-doc-edit-btn" id="InlineDoc-Edit-Toggle" title="Edit this document"><span class="btn-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3z"/><line x1="9" y1="4" x2="12" y2="7"/></svg></span> Edit</button>
+	<button class="pict-inline-doc-edit-btn primary" id="InlineDoc-Edit-Save" style="display:none"><span class="btn-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,8 6.5,11.5 13,4.5"/></svg></span> Save</button>
+	<button class="pict-inline-doc-edit-btn" id="InlineDoc-Edit-Cancel" style="display:none"><span class="btn-icon"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg></span> Cancel</button>
 </div>
 <div class="pict-inline-doc-content pict-content" id="InlineDoc-Content-Body">
 	<div class="pict-inline-doc-content-loading">Loading...</div>
@@ -302,7 +302,7 @@ const _ViewConfiguration =
 		{
 			RenderableHash: "InlineDoc-Content-Display",
 			TemplateHash: "InlineDoc-Content-Template",
-			DestinationAddress: "#InlineDoc-Content-Container",
+			ContentDestinationAddress: "#InlineDoc-Content-Container",
 			RenderMethod: "replace"
 		}
 	]

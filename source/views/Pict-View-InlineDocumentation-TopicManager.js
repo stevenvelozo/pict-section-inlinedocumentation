@@ -493,8 +493,8 @@ class InlineDocumentationTopicManagerView extends libPictView
 			tmpHTML += '</div>';
 			tmpHTML += '</div>';
 			tmpHTML += '<div class="pict-inline-doc-tm-topic-actions">';
-			tmpHTML += '<button class="pict-inline-doc-tm-action-btn" data-action="edit" data-topic-code="' + this._escapeHTML(tmpTopic.TopicCode) + '" title="Edit">&#x270E;</button>';
-			tmpHTML += '<button class="pict-inline-doc-tm-action-btn danger" data-action="delete" data-topic-code="' + this._escapeHTML(tmpTopic.TopicCode) + '" title="Delete">&#x2715;</button>';
+			tmpHTML += '<button class="pict-inline-doc-tm-action-btn" data-action="edit" data-topic-code="' + this._escapeHTML(tmpTopic.TopicCode) + '" title="Edit"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3z"/><line x1="9" y1="4" x2="12" y2="7"/></svg></button>';
+			tmpHTML += '<button class="pict-inline-doc-tm-action-btn danger" data-action="delete" data-topic-code="' + this._escapeHTML(tmpTopic.TopicCode) + '" title="Delete"><svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg></button>';
 			tmpHTML += '</div>';
 			tmpHTML += '</div>';
 		}

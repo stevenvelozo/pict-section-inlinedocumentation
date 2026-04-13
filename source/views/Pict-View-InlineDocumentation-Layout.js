@@ -5,7 +5,7 @@ const _ViewConfiguration =
 	ViewIdentifier: "InlineDoc-Layout",
 
 	DefaultRenderable: "InlineDoc-Layout-Container",
-	DefaultDestinationAddress: "#InlineDoc-Container",
+	DefaultContentDestinationAddress: "#InlineDoc-Container",
 
 	AutoRender: false,
 
@@ -122,7 +122,7 @@ const _ViewConfiguration =
 		{
 			RenderableHash: "InlineDoc-Layout-Container",
 			TemplateHash: "InlineDoc-Layout-Template",
-			DestinationAddress: "#InlineDoc-Container",
+			ContentDestinationAddress: "#InlineDoc-Container",
 			RenderMethod: "replace"
 		}
 	]

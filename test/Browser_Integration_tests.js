@@ -284,28 +284,19 @@ suite
 		(
 			function(fDone)
 			{
+				this.timeout(120000);
+
 				_RunStartTime = new Date().toISOString();
 
 				// Ensure artifacts dir
 				ensureArtifactsDir();
 
-				// Verify dist/ exists
-				if (!libFS.existsSync(libPath.join(_BookshopDistDir, 'index.html')))
-				{
-					return fDone(new Error(
-						'Bookshop dist/index.html not found. Run "cd example_applications/bookshop && npx quack build && npx quack copy" first.'
-					));
-				}
+				let tmpBookshopDir = libPath.join(_PackageRoot, 'example_applications', 'bookshop');
 
-				if (!libFS.existsSync(libPath.join(_BookshopDistDir, 'bookshop_example.js')))
+				let tmpStartServer = () =>
 				{
-					return fDone(new Error(
-						'Bookshop dist/bookshop_example.js not found. Run "cd example_applications/bookshop && npx quack build" first.'
-					));
-				}
-
-				// Start the test server
-				startTestServer(
+					// Start the test server
+					startTestServer(
 					function(pError, pServer, pPort)
 					{
 						if (pError)
@@ -377,6 +368,34 @@ suite
 									return fDone(pError);
 								});
 					});
+				};
+
+				// Auto-build the bookshop example if dist/ is missing
+				let tmpNeedsBuild = !libFS.existsSync(libPath.join(_BookshopDistDir, 'index.html'))
+					|| !libFS.existsSync(libPath.join(_BookshopDistDir, 'bookshop_example.js'));
+
+				if (tmpNeedsBuild)
+				{
+					console.log('  Bookshop dist/ not found — building automatically...');
+
+					let tmpExec = require('child_process').exec;
+					let tmpInstallAndBuild = 'cd ' + tmpBookshopDir + ' && npm install --silent && npm run build';
+
+					tmpExec(tmpInstallAndBuild, { timeout: 90000 },
+						function(pError, pStdout, pStderr)
+						{
+							if (pError)
+							{
+								return fDone(new Error('Auto-build of bookshop failed: ' + (pStderr || pError.message)));
+							}
+							console.log('  Bookshop built successfully.');
+							tmpStartServer();
+						});
+				}
+				else
+				{
+					tmpStartServer();
+				}
 			}
 		);
 
