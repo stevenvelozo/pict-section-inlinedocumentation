@@ -22,6 +22,7 @@
 	},
 	"homepage": "https://github.com/stevenvelozo/pict-section-inlinedocumentation#readme",
 	"dependencies": {
+		"lunr": "^2.3.9",
 		"pict-provider": "^1.0.12",
 		"pict-section-content": "^0.1.5",
 		"pict-section-markdowneditor": "^1.0.9",

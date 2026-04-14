@@ -150,6 +150,62 @@ const _ViewConfiguration =
 			font-size: 0.85em;
 			color: #9E6B47;
 		}
+		/* Code block action buttons (copy, fullscreen) from pict-section-content */
+		.pict-content-code-actions {
+			position: sticky;
+			top: 64px;
+			align-self: flex-start;
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			flex: 0 0 auto;
+			padding-top: 6px;
+			opacity: 0;
+			transform: translateX(-4px);
+			transition: opacity 0.15s ease, transform 0.15s ease;
+			pointer-events: none;
+		}
+		.pict-content-code-container:hover .pict-content-code-actions,
+		.pict-content-code-container:focus-within .pict-content-code-actions {
+			opacity: 1;
+			transform: translateX(0);
+			pointer-events: auto;
+		}
+		.pict-content-code-action-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			padding: 0;
+			background: #FFFFFF;
+			color: #5E5549;
+			border: 1px solid #DDD6CA;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+			transition: background-color 0.15s ease, color 0.15s ease;
+		}
+		.pict-content-code-action-btn svg {
+			display: block;
+			width: 14px;
+			height: 14px;
+			stroke: currentColor;
+			fill: none;
+			stroke-width: 1.6;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+		.pict-content-code-action-btn:hover {
+			background: #2E7D74;
+			color: #FFFFFF;
+			border-color: #2E7D74;
+		}
+		.pict-content-code-action-btn.is-copied {
+			background: #2E7D74;
+			color: #FFFFFF;
+			border-color: #2E7D74;
+		}
 		.pict-inline-doc-edit-toolbar {
 			display: none;
 			align-items: center;
@@ -524,6 +580,19 @@ class InlineDocumentationContentView extends libPictContentView
 			let tmpLink = tmpLinks[i];
 			let tmpRel = tmpLink.getAttribute('rel');
 			let tmpPath = tmpRel.replace('pict-inline-doc-link:', '');
+
+			// Check if this is a cross-module link that should open externally
+			if (tmpProvider && typeof tmpProvider.isExternalPath === 'function' && tmpProvider.isExternalPath(tmpPath))
+			{
+				let tmpExternalURL = tmpProvider.resolveExternalURL(tmpPath);
+				if (tmpExternalURL)
+				{
+					tmpLink.setAttribute('href', tmpExternalURL);
+					tmpLink.setAttribute('target', '_blank');
+					tmpLink.setAttribute('rel', 'noopener');
+					continue;
+				}
+			}
 
 			tmpLink.addEventListener('click', (pEvent) =>
 			{

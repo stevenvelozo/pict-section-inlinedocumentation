@@ -42,7 +42,7 @@ const _ViewConfiguration =
 		.pict-inline-doc-nav-container.pict-inline-doc-nav-hidden {
 			display: none;
 		}
-		/* Compact mode: nav moves to a horizontal top bar when container is narrow */
+		/* Compact mode: stack nav above content when container is narrow */
 		.pict-inline-doc.pict-inline-doc-compact {
 			flex-direction: column;
 		}
@@ -53,54 +53,7 @@ const _ViewConfiguration =
 			border-right: none;
 			border-bottom: 1px solid #E5DED4;
 			overflow-y: visible;
-			overflow-x: auto;
 			flex-shrink: 0;
-			max-height: none;
-		}
-		/* Compact mode: nav items flow horizontally */
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav {
-			padding: 0.4em 0.5em;
-			display: flex;
-			flex-wrap: wrap;
-			align-items: center;
-			gap: 0.15em 0.3em;
-		}
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-group {
-			display: flex;
-			flex-wrap: wrap;
-			align-items: center;
-			margin-bottom: 0;
-			gap: 0.1em 0.2em;
-		}
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-group-header {
-			padding: 0.2em 0.5em;
-			font-size: 0.75em;
-			white-space: nowrap;
-		}
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-group-toggle {
-			display: none;
-		}
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-group-items {
-			display: flex !important;
-			flex-wrap: wrap;
-			gap: 0.1em;
-		}
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-item {
-			padding: 0.2em 0.5em;
-			font-size: 0.8em;
-			border-left: none;
-			border-radius: 3px;
-			white-space: nowrap;
-		}
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-item.active {
-			border-left: none;
-			background: #2E7D74;
-			color: #fff;
-		}
-		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-nav-topic-badge {
-			margin: 0 0.3em;
-			padding: 0.15em 0.5em;
-			font-size: 0.75em;
 		}
 	`,
 
