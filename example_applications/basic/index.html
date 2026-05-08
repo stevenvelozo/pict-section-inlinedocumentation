@@ -9,7 +9,7 @@
 		body {
 			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 			background: #F5F3EE;
-			color: #3D3229;
+			color: var(--theme-color-text-primary, #3D3229);
 			padding: 2em;
 		}
 		h1 {
@@ -26,17 +26,17 @@
 			padding: 0.4em 0.8em;
 			border: 1px solid #C4BAA8;
 			border-radius: 4px;
-			background: #fff;
-			color: #3D3229;
+			background: var(--theme-color-background-panel, #fff);
+			color: var(--theme-color-text-primary, #3D3229);
 			cursor: pointer;
 			font-size: 0.9em;
 		}
 		.controls button:hover {
-			background: #F0ECE4;
+			background: var(--theme-color-background-secondary, #F0ECE4);
 		}
 		.controls button.active {
 			background: #2E7D74;
-			color: #fff;
+			color: var(--theme-color-background-panel, #fff);
 			border-color: #2E7D74;
 		}
 		#InlineDoc-Container {

@@ -1468,7 +1468,7 @@ class InlineDocumentationProvider extends libPictProvider
 
 		let tmpEditorHTML = '<div class="pict-inline-doc-tm-form-group">';
 		tmpEditorHTML += '<label class="pict-inline-doc-tm-form-label">Tooltip Key</label>';
-		tmpEditorHTML += '<div style="font-family:monospace;font-size:0.85em;color:#8A7F72;padding:0.3em 0;">' + this._escapeTooltipHTML(pTooltipKey) + '</div>';
+		tmpEditorHTML += '<div style="font-family:monospace;font-size:0.85em;color:var(--theme-color-text-muted, #8A7F72);padding:0.3em 0;">' + this._escapeTooltipHTML(pTooltipKey) + '</div>';
 		tmpEditorHTML += '</div>';
 		tmpEditorHTML += '<div class="pict-inline-doc-tm-form-group">';
 		tmpEditorHTML += '<label class="pict-inline-doc-tm-form-label">Content (Markdown)</label>';
@@ -1497,7 +1497,7 @@ class InlineDocumentationProvider extends libPictProvider
 				{
 					// Initial preview
 					let tmpLinkResolver = tmpSelf._createTooltipLinkResolver();
-					let tmpInitialHTML = tmpCurrentContent ? tmpSelf._ContentProvider.parseMarkdown(tmpCurrentContent, tmpLinkResolver) : '<span style="color:#8A7F72;">No content yet.</span>';
+					let tmpInitialHTML = tmpCurrentContent ? tmpSelf._ContentProvider.parseMarkdown(tmpCurrentContent, tmpLinkResolver) : '<span style="color:var(--theme-color-text-muted, #8A7F72);">No content yet.</span>';
 					tmpPreview.innerHTML = tmpInitialHTML;
 
 					// Live preview on input
@@ -1510,7 +1510,7 @@ class InlineDocumentationProvider extends libPictProvider
 						}
 						else
 						{
-							tmpPreview.innerHTML = '<span style="color:#8A7F72;">No content yet.</span>';
+							tmpPreview.innerHTML = '<span style="color:var(--theme-color-text-muted, #8A7F72);">No content yet.</span>';
 						}
 					});
 

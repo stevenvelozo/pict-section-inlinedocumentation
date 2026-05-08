@@ -1,6 +1,6 @@
 {
 	"name": "pict-section-inlinedocumentation",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "Pict embeddable inline documentation browser with topic support",
 	"main": "source/Pict-Section-InlineDocumentation.js",
 	"scripts": {

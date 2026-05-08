@@ -18,9 +18,9 @@ const _ViewConfiguration =
 			min-height: 300px;
 			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 			font-size: 15px;
-			color: #423D37;
-			background: #FDFCFA;
-			border: 1px solid #E5DED4;
+			color: var(--theme-color-text-primary, #423D37);
+			background: var(--theme-color-background-panel,    #FDFCFA);
+			border: 1px solid var(--theme-color-border-default, #E5DED4);
 			border-radius: 6px;
 			overflow: hidden;
 		}
@@ -28,8 +28,8 @@ const _ViewConfiguration =
 			width: 240px;
 			min-width: 200px;
 			max-width: 300px;
-			border-right: 1px solid #E5DED4;
-			background: #F7F5F0;
+			border-right: 1px solid var(--theme-color-border-default, #E5DED4);
+			background: var(--theme-color-background-secondary, #F7F5F0);
 			overflow-y: auto;
 			flex-shrink: 0;
 		}
@@ -51,7 +51,7 @@ const _ViewConfiguration =
 			min-width: 0;
 			max-width: none;
 			border-right: none;
-			border-bottom: 1px solid #E5DED4;
+			border-bottom: 1px solid var(--theme-color-border-default, #E5DED4);
 			overflow-y: visible;
 			flex-shrink: 0;
 		}

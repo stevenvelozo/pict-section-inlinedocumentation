@@ -42,7 +42,7 @@ const _ViewConfiguration =
 		}
 		.bookshop-help-btn:hover {
 			background: #D4A373;
-			color: #fff;
+			color: var(--theme-color-background-panel, #fff);
 		}
 		.bookshop-filter-bar {
 			margin-bottom: 1.25em;
@@ -53,14 +53,14 @@ const _ViewConfiguration =
 		.bookshop-filter-bar label {
 			font-size: 0.85em;
 			font-weight: 600;
-			color: #5E5549;
+			color: var(--theme-color-text-secondary, #5E5549);
 		}
 		.bookshop-filter-bar select {
 			padding: 0.35em 0.7em;
 			border: 1px solid #D4A373;
 			border-radius: 4px;
 			font-size: 0.85em;
-			background: #fff;
+			background: var(--theme-color-background-panel, #fff);
 			color: #264653;
 		}
 		.bookshop-book-grid {
@@ -72,7 +72,7 @@ const _ViewConfiguration =
 			display: flex;
 			gap: 1em;
 			padding: 1em;
-			background: #fff;
+			background: var(--theme-color-background-panel, #fff);
 			border: 1px solid #E5DED4;
 			border-radius: 6px;
 			cursor: pointer;
@@ -88,7 +88,7 @@ const _ViewConfiguration =
 			border-radius: 4px;
 			object-fit: cover;
 			flex-shrink: 0;
-			background: #F0ECE4;
+			background: var(--theme-color-background-secondary, #F0ECE4);
 		}
 		.bookshop-book-info {
 			flex: 1;
@@ -110,7 +110,7 @@ const _ViewConfiguration =
 			font-size: 0.7em;
 			padding: 0.15em 0.5em;
 			background: #E8E3D8;
-			color: #5E5549;
+			color: var(--theme-color-text-secondary, #5E5549);
 			border-radius: 3px;
 			margin-bottom: 0.4em;
 		}

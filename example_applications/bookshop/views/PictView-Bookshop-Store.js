@@ -20,7 +20,7 @@ const _ViewConfiguration =
 			padding: 0.4em 0.8em;
 			border: 1px solid #D4A373;
 			border-radius: 4px;
-			background: #fff;
+			background: var(--theme-color-background-panel, #fff);
 			color: #264653;
 			cursor: pointer;
 			font-size: 0.85em;
@@ -40,7 +40,7 @@ const _ViewConfiguration =
 			border-radius: 6px;
 			object-fit: cover;
 			flex-shrink: 0;
-			background: #F0ECE4;
+			background: var(--theme-color-background-secondary, #F0ECE4);
 			box-shadow: 0 2px 12px rgba(38,70,83,0.12);
 		}
 		.bookshop-store-info {
@@ -94,7 +94,7 @@ const _ViewConfiguration =
 			display: inline-block;
 			padding: 0.6em 1.5em;
 			background: #E76F51;
-			color: #fff;
+			color: var(--theme-color-background-panel, #fff);
 			border: none;
 			border-radius: 5px;
 			font-size: 1em;
