@@ -1,181 +1,76 @@
 {
-	"Generated": "2026-04-10T17:25:27.303Z",
+	"Generated": "2026-05-22T05:45:26.607Z",
+	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
-	"Groups": [
-		{
-			"Name": "Dist",
-			"Key": "dist",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "indoctrinate_content_staging",
-					"Repo": "indoctrinate_content_staging",
-					"Group": "dist",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "test-artifacts",
-					"Repo": "test-artifacts",
-					"Group": "dist",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Docs",
-			"Key": "docs",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "css",
-					"Repo": "css",
-					"Group": "docs",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": [
-						"css/docuserve.css"
-					]
-				}
-			]
-		},
-		{
-			"Name": "Example_applications",
-			"Key": "example_applications",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": ".data",
-					"Repo": ".data",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "basic",
-					"Repo": "basic",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [
-						{
-							"Title": "Home",
-							"Path": "README.md"
-						},
-						{
-							"Title": "Guide",
-							"Children": [
-								{
-									"Title": "Getting Started",
-									"Path": "getting-started.md"
-								},
-								{
-									"Title": "Advanced Topics",
-									"Path": "advanced-topics.md"
-								}
-							]
-						}
-					],
-					"DocFiles": [
-						"README.md",
-						"_sidebar.md",
-						"_topics.json",
-						"advanced-topics.md",
-						"getting-started.md"
-					]
-				},
-				{
-					"Name": "bookshop",
-					"Repo": "bookshop",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [
-						{
-							"Title": "Welcome",
-							"Path": "welcome.md"
-						},
-						{
-							"Title": "Using the Bookshop",
-							"Children": [
-								{
-									"Title": "Book Catalog",
-									"Path": "book-list.md"
-								},
-								{
-									"Title": "Book Details",
-									"Path": "book-detail.md"
-								},
-								{
-									"Title": "Store Page",
-									"Path": "store.md"
-								},
-								{
-									"Title": "Search & Filter",
-									"Path": "search-filter.md"
-								}
-							]
-						}
-					],
-					"DocFiles": [
-						"_sidebar.md",
-						"book-detail.md",
-						"book-list.md",
-						"pict_documentation_topics.json",
-						"search-filter.md",
-						"store.md",
-						"welcome.md",
-						"_sidebar.md",
-						"book-detail.md",
-						"book-list.md",
-						"search-filter.md",
-						"store.md",
-						"welcome.md"
-					]
-				}
-			]
-		},
-		{
-			"Name": "Source",
-			"Key": "source",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "providers",
-					"Repo": "providers",
-					"Group": "source",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				},
-				{
-					"Name": "views",
-					"Repo": "views",
-					"Group": "source",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		}
-	]
+	"Module": {
+		"Name": "pict-section-inlinedocumentation",
+		"Repo": "pict-section-inlinedocumentation",
+		"Group": "",
+		"Branch": "master",
+		"HasDocs": true,
+		"HasCover": true,
+		"Sidebar": [
+			{
+				"Title": "Welcome",
+				"Path": "welcome.md"
+			},
+			{
+				"Title": "Using the Bookshop",
+				"Children": [
+					{
+						"Title": "Book Catalog",
+						"Path": "book-list.md"
+					},
+					{
+						"Title": "Book Details",
+						"Path": "book-detail.md"
+					},
+					{
+						"Title": "Store Page",
+						"Path": "store.md"
+					},
+					{
+						"Title": "Search & Filter",
+						"Path": "search-filter.md"
+					}
+				]
+			}
+		],
+		"DocFiles": [
+			".nojekyll",
+			"README.md",
+			"_brand.json",
+			"_cover.md",
+			"_sidebar.md",
+			"_topbar.md",
+			"_version.json",
+			"api-reference.md",
+			"architecture.md",
+			"embedding-level1-sidebar.md",
+			"embedding-level2-routes.md",
+			"embedding-level3-tooltips.md",
+			"embedding-level4-autogen.md",
+			"index.html",
+			"overview.md",
+			"quickstart.md",
+			"reference.md",
+			"retold-catalog.json",
+			"retold-keyword-index.json",
+			"README.md",
+			"_brand.json",
+			"_sidebar.md",
+			"_topics.json",
+			"advanced-topics.md",
+			"getting-started.md",
+			"_brand.json",
+			"_sidebar.md",
+			"book-detail.md",
+			"book-list.md",
+			"search-filter.md",
+			"store.md",
+			"welcome.md"
+		]
+	},
+	"Groups": []
 }
