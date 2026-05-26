@@ -1,6 +1,6 @@
 # Level 4 -- Auto-Generated Tooltips for Every Editable Control
 
-The deepest integration. Every control in your application that is managed by a [Manyfest](https://stevenvelozo.github.io/manyfest/) descriptor gets a tooltip automatically, with zero `data-help` markup. Missing topics are materialized as stubs on the fly. When a privileged user enters **edit mode**, they can click any tooltip to open an inline editor and write the copy right there in the running app -- no repo checkouts, no deploys.
+The deepest integration. Every control in your application that is managed by a [Manyfest](https://fable-retold.github.io/manyfest/) descriptor gets a tooltip automatically, with zero `data-help` markup. Missing topics are materialized as stubs on the fly. When a privileged user enters **edit mode**, they can click any tooltip to open an inline editor and write the copy right there in the running app -- no repo checkouts, no deploys.
 
 Good for: mature products with a content-owning team that isn't going to wait for engineering to merge every typo fix.
 

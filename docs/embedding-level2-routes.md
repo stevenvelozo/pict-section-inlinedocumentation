@@ -7,7 +7,7 @@ Good for: wizard-style apps, CRUD panels, anything with a clear screen-to-concep
 ## Prerequisites
 
 - Level 1 is already working.
-- Your app uses [`pict-router`](https://stevenvelozo.github.io/pict-router/) (or exposes a comparable hash or history router).
+- Your app uses [`pict-router`](https://fable-retold.github.io/pict-router/) (or exposes a comparable hash or history router).
 
 ## Declare the Map
 

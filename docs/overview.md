@@ -36,7 +36,7 @@ Each level is a strict superset of the one before it. You can start at level 1 a
 
 ## Relationship to Other Modules
 
-- Uses [`pict-view`](https://stevenvelozo.github.io/pict-view/) as its base class.
-- Optionally consumes catalogs produced by [`pict-docuserve`](https://stevenvelozo.github.io/pict-docuserve/).
-- Uses [`manyfest`](https://stevenvelozo.github.io/manyfest/) descriptors to enumerate controls at level 4.
-- Uses [`pict-template-markdown`](https://stevenvelozo.github.io/pict-template-markdown/) or an equivalent renderer to turn Markdown into HTML at runtime.
+- Uses [`pict-view`](https://fable-retold.github.io/pict-view/) as its base class.
+- Optionally consumes catalogs produced by [`pict-docuserve`](https://fable-retold.github.io/pict-docuserve/).
+- Uses [`manyfest`](https://fable-retold.github.io/manyfest/) descriptors to enumerate controls at level 4.
+- Uses [`pict-template-markdown`](https://fable-retold.github.io/pict-template-markdown/) or an equivalent renderer to turn Markdown into HTML at runtime.

@@ -1,6 +1,6 @@
 # pict-section-inlinedocumentation
 
-> **[&#9654; Read the Pict-Section-Inlinedocumentation Documentation](https://stevenvelozo.github.io/pict-section-inlinedocumentation/)** &mdash; interactive docs with the full API reference.
+> **[&#9654; Read the Pict-Section-Inlinedocumentation Documentation](https://fable-retold.github.io/pict-section-inlinedocumentation/)** &mdash; interactive docs with the full API reference.
 
 > Embed context-aware documentation and tooltip help directly inside any Pict application.
 
@@ -79,7 +79,7 @@ Each level is a strict superset of the one below it.
 
 ## Documentation
 
-Full documentation lives in [`docs/`](./docs/) and is published via [pict-docuserve](https://github.com/stevenvelozo/pict-docuserve):
+Full documentation lives in [`docs/`](./docs/) and is published via [pict-docuserve](https://github.com/fable-retold/pict-docuserve):
 
 - [Overview](./docs/overview.md)
 - [Quickstart](./docs/quickstart.md)
@@ -98,11 +98,11 @@ npx quack prepare-docs
 
 | Module | Role |
 |---|---|
-| [pict](https://github.com/stevenvelozo/pict) | Application framework |
-| [pict-view](https://github.com/stevenvelozo/pict-view) | Base view class |
-| [pict-router](https://github.com/stevenvelozo/pict-router) | Route change source for Level 2 |
-| [pict-docuserve](https://github.com/stevenvelozo/pict-docuserve) | Catalog + keyword index producer |
-| [manyfest](https://github.com/stevenvelozo/manyfest) | Descriptors walked for Level 4 |
+| [pict](https://github.com/fable-retold/pict) | Application framework |
+| [pict-view](https://github.com/fable-retold/pict-view) | Base view class |
+| [pict-router](https://github.com/fable-retold/pict-router) | Route change source for Level 2 |
+| [pict-docuserve](https://github.com/fable-retold/pict-docuserve) | Catalog + keyword index producer |
+| [manyfest](https://github.com/fable-retold/manyfest) | Descriptors walked for Level 4 |
 
 ## License
 

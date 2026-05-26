@@ -4,7 +4,7 @@
 
 `pict-section-inlinedocumentation` is a Pict section that turns a folder of Markdown topics into in-app help. It spans the full spectrum from "a sidebar with a table of contents" to "every editable control on every screen has a live, editable tooltip" -- and you pick the level that matches your product.
 
-Part of the [Retold](https://github.com/stevenvelozo/retold) suite. Uses [`pict-view`](https://stevenvelozo.github.io/pict-view/) as its base, optionally consumes catalogs from [`pict-docuserve`](https://stevenvelozo.github.io/pict-docuserve/), and at the deepest level pairs with [`manyfest`](https://stevenvelozo.github.io/manyfest/) to auto-generate tooltips for every descriptor in your model.
+Part of the [Retold](https://github.com/stevenvelozo/retold) suite. Uses [`pict-view`](https://fable-retold.github.io/pict-view/) as its base, optionally consumes catalogs from [`pict-docuserve`](https://fable-retold.github.io/pict-docuserve/), and at the deepest level pairs with [`manyfest`](https://fable-retold.github.io/manyfest/) to auto-generate tooltips for every descriptor in your model.
 
 ## Four Levels of Embeddedness
 
@@ -24,7 +24,7 @@ Each level is a strict superset of the one before it.
 
 ## Documentation
 
-Published with [`pict-docuserve`](https://stevenvelozo.github.io/pict-docuserve/). Open `docs/index.html` locally, or browse the source Markdown:
+Published with [`pict-docuserve`](https://fable-retold.github.io/pict-docuserve/). Open `docs/index.html` locally, or browse the source Markdown:
 
 - **[Overview](overview.md)** -- what it does and why
 - **[Quickstart](quickstart.md)** -- sidebar running in five minutes
@@ -71,12 +71,12 @@ _Pict.onAfterInitializeAsync = async () =>
 
 | Module | Role |
 |---|---|
-| [pict](https://stevenvelozo.github.io/pict/) | Application framework |
-| [pict-view](https://stevenvelozo.github.io/pict-view/) | Base view class |
-| [pict-router](https://stevenvelozo.github.io/pict-router/) | Source of route change events for Level 2 |
-| [pict-docuserve](https://stevenvelozo.github.io/pict-docuserve/) | Produces the catalog and keyword index consumed by this section |
-| [pict-template-markdown](https://stevenvelozo.github.io/pict-template-markdown/) | Markdown -> HTML renderer |
-| [manyfest](https://stevenvelozo.github.io/manyfest/) | Descriptors walked by Level 4 auto-generation |
+| [pict](https://fable-retold.github.io/pict/) | Application framework |
+| [pict-view](https://fable-retold.github.io/pict-view/) | Base view class |
+| [pict-router](https://fable-retold.github.io/pict-router/) | Source of route change events for Level 2 |
+| [pict-docuserve](https://fable-retold.github.io/pict-docuserve/) | Produces the catalog and keyword index consumed by this section |
+| [pict-template-markdown](https://fable-retold.github.io/pict-template-markdown/) | Markdown -> HTML renderer |
+| [manyfest](https://fable-retold.github.io/manyfest/) | Descriptors walked by Level 4 auto-generation |
 
 ## License
 
