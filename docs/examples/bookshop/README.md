@@ -1,7 +1,7 @@
-# Bookshop — Inline Contextual Documentation in Practice
+# Bookshop - Inline Contextual Documentation in Practice
 
 <!-- docuserve:example-launch:start -->
-> **[&#9654; Launch the live app](examples/bookshop/index.html)** — runs in your browser, opens in a new tab.
+> **[Launch the live app](examples/bookshop/index.html)** - runs in your browser, opens in a new tab.
 <!-- docuserve:example-launch:end -->
 
 A small e-commerce demo that puts the documentation **right next to the
@@ -9,7 +9,7 @@ UI it describes**. Browse a book catalog, click a book to open its
 store page, and at every step the right-hand help panel knows which
 route you're on and what to show. Hover an icon for a markdown
 tooltip, press **F1** to toggle the whole panel, click a `?` button
-next to a section header to jump to a specific topic — all backed by
+next to a section header to jump to a specific topic - all backed by
 one provider, one topics manifest, and a folder of plain markdown
 files.
 
@@ -17,7 +17,7 @@ This is the reference example for **embedding levels 3 and 4** from
 the inline-documentation module: route-mapped contextual help, plus
 data-attribute-driven tooltips that resolve content from the same
 topics manifest. The application code does no markdown parsing of its
-own — the provider owns everything from file loading to tooltip
+own - the provider owns everything from file loading to tooltip
 positioning.
 
 ## What it demonstrates
@@ -27,46 +27,46 @@ positioning.
 | Inline-documentation provider registered as `Pict-InlineDocumentation` | `addProvider('Pict-InlineDocumentation', libInlineDocumentation.default_configuration, libInlineDocumentation)` |
 | Topics manifest pre-loaded into AppData | `AppData.InlineDocumentation.Topics = _TopicsData` before `initializeDocumentation()` |
 | Route-mapped help panel | `tmpDocProvider.navigateToRoute('/books/store/' + pBookID)` switches the topic in the help panel |
-| `data-d-tooltip` attribute → markdown tooltip | `<span data-d-tooltip="catalog-info" data-d-tooltip-icon></span>` — provider scans on render, attaches hover/focus tooltips |
+| `data-d-tooltip` attribute -> markdown tooltip | `<span data-d-tooltip="catalog-info" data-d-tooltip-icon></span>` - provider scans on render, attaches hover/focus tooltips |
 | Topic-keyed help buttons | `tmpApp.showHelp('BOOKSHOP-STORE')` triggers a specific topic regardless of current route |
 | F1 keyboard shortcut for the help panel | `document.addEventListener('keydown', ...)` in `_setupKeyboardShortcuts()` |
 | `initializeDocumentation` with save/upload handlers | Demo wires `onSave`, `onTopicsSave`, `onImageUpload` callbacks the provider invokes |
 | Edit-mode toggle | `tmpDocProvider.setEditEnabled(true)` lets the demo edit the topic markdown live |
 | `loadTopicDocument(topicCode)` API | The application's `showHelp(topicCode)` reaches into the provider to swap topics on demand |
-| Markdown-with-help-links | `[Book Catalog Help](help:book-list.md)` — `help:` URLs resolve via the documentation provider, not the browser |
+| Markdown-with-help-links | `[Book Catalog Help](help:book-list.md)` - `help:` URLs resolve via the documentation provider, not the browser |
 | Wildcard route matching | `"Routes": ["/books/store/*"]` matches `/books/store/1`, `/books/store/2`, ... |
 | Tooltips co-located with topics | Each topic record carries a `Tooltips: {...}` block that the provider auto-registers |
 
 ## Key files
 
-- `Pict-Application-Bookshop.js` — the application. Registers the
+- `Pict-Application-Bookshop.js` - the application. Registers the
   inline-documentation provider, three views (BookList, Store,
   HelpToggle), bootstraps `AppData.Bookshop` + `AppData.InlineDocumentation`,
   calls `initializeDocumentation` with the demo save callbacks, wires
   the F1 shortcut, and owns the `toggleHelp` / `showHelp` /
   `showBook` / `showBookList` / `filterByGenre` navigation methods.
-- `Pict-Application-Bookshop-Configuration.json` — the Pict
+- `Pict-Application-Bookshop-Configuration.json` - the Pict
   application stanza. Disables `AutoRenderMainViewportViewAfterInitialize`
   so the application can do the initial render after the provider has
   finished loading its topics.
-- `data/BookshopData.json` — the books seed data
+- `data/BookshopData.json` - the books seed data
   (`Title` / `Author` / `Price` / `Genre` / `Cover` / `Description` / `InStock`).
-- `data/pict_documentation_topics.json` — the topics manifest. Five
+- `data/pict_documentation_topics.json` - the topics manifest. Five
   topics, two of them carrying inline tooltip records that the
   provider auto-registers.
 - `docs/welcome.md`, `book-list.md`, `book-detail.md`, `store.md`,
-  `search-filter.md` — the topic content as plain markdown files. Each
+  `search-filter.md` - the topic content as plain markdown files. Each
   referenced by `TopicHelpFilePath` in the manifest.
-- `views/PictView-Bookshop-BookList.js` — grid of book cards with
+- `views/PictView-Bookshop-BookList.js` - grid of book cards with
   genre filter. Sprinkles `data-d-tooltip="..."` and
   `data-d-tooltip-icon` attributes everywhere; calls
   `tmpDocProvider.scanTooltips()` after every render.
-- `views/PictView-Bookshop-Store.js` — single-book store page. Same
-  pattern as BookList — `data-d-tooltip` attributes plus a `?` help
+- `views/PictView-Bookshop-Store.js` - single-book store page. Same
+  pattern as BookList - `data-d-tooltip` attributes plus a `?` help
   button that triggers `showHelp('BOOKSHOP-STORE')`.
-- `views/PictView-Bookshop-HelpToggle.js` — a stub view for the
+- `views/PictView-Bookshop-HelpToggle.js` - a stub view for the
   help-toggle slot, included for symmetry with future expansion.
-- `html/index.html` — defines the layout shell: a header bar with the
+- `html/index.html` - defines the layout shell: a header bar with the
   help button, a content area, a slide-in help panel on the right, and
   an F1 hint pinned to the bottom-right.
 
@@ -116,12 +116,12 @@ canonical shape:
 ```
 
 `Routes` is an array of route patterns the topic matches; `*` is a
-wildcard. `Tooltips` is a `data-d-tooltip` → `{Content}` map that the
+wildcard. `Tooltips` is a `data-d-tooltip` -> `{Content}` map that the
 provider auto-registers when the topic loads.
 
 ---
 
-## Feature 1 — Initializing the documentation provider
+## Feature 1 - Initializing the documentation provider
 
 The application's constructor adds the provider with its default
 configuration. The actual initialisation happens in
@@ -135,21 +135,21 @@ tmpDocProvider.initializeDocumentation(
         DocsBaseURL: 'docs/',
         onSave: (pSaveData, fSaveCallback) =>
         {
-            // Demo save handler — log to console
+            // Demo save handler - log to console
             this.log.info(`Bookshop: Saving document [${pSaveData.Path}] (${pSaveData.Content.length} chars)`);
             // In a real app, this would PUT to an API
             return fSaveCallback(null);
         },
         onTopicsSave: (pTopics, fSaveCallback) =>
         {
-            // Demo topics save handler — log to console
+            // Demo topics save handler - log to console
             this.log.info(`Bookshop: Saving topics (${Object.keys(pTopics).length} topics)`);
             // In a real app, this would PUT to an API
             return fSaveCallback(null);
         },
         onImageUpload: (pFile, pDocumentPath, fCallback) =>
         {
-            // Demo image upload handler — log to console
+            // Demo image upload handler - log to console
             this.log.info(`Bookshop: Image upload [${pFile.name}] (${pFile.size} bytes) for document [${pDocumentPath}]`);
             // In a real app, this would POST the file to a server
             return fCallback('Demo mode: no upload server configured');
@@ -175,16 +175,16 @@ tmpDocProvider.initializeDocumentation(
 
 Three things happen in the initialisation callback:
 
-1. **`setEditEnabled(true)`** — switches the help panel into edit mode,
+1. **`setEditEnabled(true)`** - switches the help panel into edit mode,
    so clicking the **Edit** button in the panel reveals a markdown
    editor for the current topic. The `onSave` callback fires on Save;
    the demo just logs to console.
-2. **`navigateToRoute('/books')`** — primes the help panel with the
+2. **`navigateToRoute('/books')`** - primes the help panel with the
    topic that matches the initial route. This is how route-aware help
    works: the application tells the provider what URL the user is on;
    the provider looks up the matching topic from the manifest's
    `Routes` arrays.
-3. **`_setupKeyboardShortcuts()`** — registers a `keydown` listener for
+3. **`_setupKeyboardShortcuts()`** - registers a `keydown` listener for
    the F1 key. The legitimate exception to the no-`addEventListener`
    rule: this is a window-level shortcut, not a per-view re-rendered
    element.
@@ -196,7 +196,7 @@ the help panel being empty when the user first sees the page.
 
 ---
 
-## Feature 2 — Topics manifest with route mapping
+## Feature 2 - Topics manifest with route mapping
 
 The manifest is the single source of truth for *which topic shows
 when*. Each topic has a `Routes` array:
@@ -251,7 +251,7 @@ showBook(pBookID)
 }
 ```
 
-The route is fabricated — the bookshop is a single-page app with no
+The route is fabricated - the bookshop is a single-page app with no
 real URL changes. The route is just a string the application invents
 to tell the documentation provider *what context* the user is in. In a
 router-driven app the same call lives in the router's `onRouteChange`
@@ -259,7 +259,7 @@ callback.
 
 ---
 
-## Feature 3 — `data-d-tooltip` attributes for inline tooltips
+## Feature 3 - `data-d-tooltip` attributes for inline tooltips
 
 The BookList view sprinkles tooltip attributes through its HTML:
 
@@ -307,7 +307,7 @@ if (tmpDocProvider)
 }
 ```
 
-Calling `scanTooltips()` after every render is the contract — the
+Calling `scanTooltips()` after every render is the contract - the
 provider walks the DOM, finds every `data-d-tooltip` attribute, and
 re-attaches its hover/focus tooltips. New elements added by a
 re-render are picked up; orphaned references are cleaned up. The
@@ -317,7 +317,7 @@ scan call.
 
 ---
 
-## Feature 4 — Topic-keyed help buttons
+## Feature 4 - Topic-keyed help buttons
 
 The `?` button next to each section header bypasses route mapping and
 jumps straight to a specific topic:
@@ -371,12 +371,12 @@ attached to that topic** so they activate for the current view.
 
 `navigateToRoute('...')` is the "show whatever matches this route"
 API. Use it when the application changes context. `loadTopicDocument`
-is for explicit user requests — clicking a `?` button, opening a
-"how do I…" link, restoring a deep-linked help URL.
+is for explicit user requests - clicking a `?` button, opening a
+"how do I..." link, restoring a deep-linked help URL.
 
 ---
 
-## Feature 5 — F1 keyboard shortcut
+## Feature 5 - F1 keyboard shortcut
 
 F1 is the universal "help me" key. The application registers it once
 at boot:
@@ -434,12 +434,12 @@ room.
 Window-level keyboard handlers and `MutationObserver` callbacks are
 the explicit exceptions to Pict's "no `addEventListener`" rule. There's
 no inline-handler equivalent for keyboard shortcuts on the document,
-and the listener is installed once at boot — it does not get torn
+and the listener is installed once at boot - it does not get torn
 down by view re-renders.
 
 ---
 
-## Feature 6 — Markdown topics with `help:` links
+## Feature 6 - Markdown topics with `help:` links
 
 Each topic's markdown file is plain CommonMark, with one extension:
 the `help:` URL scheme is intercepted by the provider so cross-topic
@@ -463,7 +463,7 @@ that calls `loadTopicDocument(...)` for the topic whose
 `TopicHelpFilePath` is `search-filter.md`. The browser stays on the
 same page; the help panel swaps content.
 
-Tooltip content uses the same syntax — every `Tooltips` entry's
+Tooltip content uses the same syntax - every `Tooltips` entry's
 `Content` field is markdown that may contain `help:` links, so a hover
 tooltip can deep-link into a long-form topic.
 
@@ -474,7 +474,7 @@ the `docs/` folder copied next to the bundle.
 
 ---
 
-## Feature 7 — Edit-mode demo with save callbacks
+## Feature 7 - Edit-mode demo with save callbacks
 
 `setEditEnabled(true)` turns the help panel's content area into an
 editable region. The user can edit a topic's markdown, click Save, and
@@ -483,7 +483,7 @@ the provider invokes the `onSave` callback the host supplied:
 ```js
 onSave: (pSaveData, fSaveCallback) =>
 {
-    // Demo save handler — log to console
+    // Demo save handler - log to console
     this.log.info(`Bookshop: Saving document [${pSaveData.Path}] (${pSaveData.Content.length} chars)`);
     // In a real app, this would PUT to an API
     return fSaveCallback(null);
@@ -515,7 +515,7 @@ inline error state.
 ```bash
 cd example_applications/bookshop
 npm install
-npm run build      # quack build → quack copy → dist/
+npm run build      # quack build -> quack copy -> dist/
 # Open dist/index.html in a browser, or serve dist/ statically:
 #   cd dist && python3 -m http.server 8080
 #   visit http://localhost:8080
@@ -527,26 +527,26 @@ topics manifest into `dist/docs/`, where the provider's
 
 ## Things to try in the running app
 
-- **Hover the `?` icons next to "Book Catalog" and "Genre"** — markdown
+- **Hover the `?` icons next to "Book Catalog" and "Genre"** - markdown
   tooltips appear, with `help:` links you can click to jump to the
   full topic.
-- **Click the help button in the header** (top-right `?` Help) — the
+- **Click the help button in the header** (top-right `?` Help) - the
   panel slides in from the right. The content area shrinks to make
   room.
-- **Press F1** — same thing. F1 again to close.
-- **Click any book card** — the store page loads, *and* the help
+- **Press F1** - same thing. F1 again to close.
+- **Click any book card** - the store page loads, *and* the help
   panel content swaps to the store topic because
   `navigateToRoute('/books/store/' + id)` matched the wildcard route.
-- **Click the `?` button next to a section header** —
+- **Click the `?` button next to a section header** -
   `showHelp('BOOKSHOP-...')` opens the panel (if closed) and loads the
   specific topic regardless of current route.
-- **Hover the price** on the store page — a tooltip explains
+- **Hover the price** on the store page - a tooltip explains
   pricing and links to the longer topic.
-- **Click the Edit button in the help panel** — the content area
+- **Click the Edit button in the help panel** - the content area
   becomes editable. Make a change, click Save, watch the console log
   the `onSave` callback firing with the document path and content
   length.
-- **Filter by Genre** — the catalog updates immediately. The help
+- **Filter by Genre** - the catalog updates immediately. The help
   panel doesn't change because the route is still `/books`.
 
 ## Takeaways
@@ -568,15 +568,15 @@ topics manifest into `dist/docs/`, where the provider's
    the route for targeted jumps. Both end up calling the same provider
    internals; the distinction is who's driving.
 5. **Save callbacks let the host own persistence.** The provider
-   reads, parses, edits, and re-renders markdown — but a host that
+   reads, parses, edits, and re-renders markdown - but a host that
    keeps its docs on a CMS, in a Git repo, or in S3 plugs into the
    exact same callbacks. No subclassing required.
 
 ## Related documentation
 
-- [Overview](../../overview.md) — what inline documentation does and why
-- [Quickstart](../../quickstart.md) — minimum-viable wiring
-- [Embedding Level 3 — Hand-Authored Tooltips](../../embedding-level3-tooltips.md) — the `data-d-tooltip` pattern the bookshop uses
-- [Embedding Level 4 — Auto-Generated Tooltips](../../embedding-level4-autogen.md) — the next step after this example
-- [API Reference](../../api-reference.md) — every provider method (`initializeDocumentation`, `navigateToRoute`, `loadTopicDocument`, `scanTooltips`, `setEditEnabled`, …)
-- [Architecture](../../architecture.md) — how the provider, layout view, and topics manifest fit together
+- [Overview](../../overview.md) - what inline documentation does and why
+- [Quickstart](../../quickstart.md) - minimum-viable wiring
+- [Embedding Level 3 - Hand-Authored Tooltips](../../embedding-level3-tooltips.md) - the `data-d-tooltip` pattern the bookshop uses
+- [Embedding Level 4 - Auto-Generated Tooltips](../../embedding-level4-autogen.md) - the next step after this example
+- [API Reference](../../api-reference.md) - every provider method (`initializeDocumentation`, `navigateToRoute`, `loadTopicDocument`, `scanTooltips`, `setEditEnabled`, ...)
+- [Architecture](../../architecture.md) - how the provider, layout view, and topics manifest fit together

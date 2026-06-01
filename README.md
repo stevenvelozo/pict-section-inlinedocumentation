@@ -1,6 +1,6 @@
 # pict-section-inlinedocumentation
 
-> **[&#9654; Read the Pict-Section-Inlinedocumentation Documentation](https://fable-retold.github.io/pict-section-inlinedocumentation/)** &mdash; interactive docs with the full API reference.
+> **[Read the Pict-Section-Inlinedocumentation Documentation](https://fable-retold.github.io/pict-section-inlinedocumentation/)** - interactive docs with the full API reference.
 
 > Embed context-aware documentation and tooltip help directly inside any Pict application.
 
@@ -86,7 +86,7 @@ Full documentation lives in [`docs/`](./docs/) and is published via [pict-docuse
 - [Architecture](./docs/architecture.md)
 - [Implementation Reference](./docs/reference.md)
 - [API Reference](./docs/api-reference.md)
-- Embedding: [Level 1](./docs/embedding-level1-sidebar.md) · [Level 2](./docs/embedding-level2-routes.md) · [Level 3](./docs/embedding-level3-tooltips.md) · [Level 4](./docs/embedding-level4-autogen.md)
+- Embedding: [Level 1](./docs/embedding-level1-sidebar.md) - [Level 2](./docs/embedding-level2-routes.md) - [Level 3](./docs/embedding-level3-tooltips.md) - [Level 4](./docs/embedding-level4-autogen.md)
 
 Regenerate the catalog and keyword index after editing any Markdown file:
 

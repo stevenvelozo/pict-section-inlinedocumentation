@@ -17,5 +17,5 @@ A Pict section that turns Markdown documentation into in-app help -- from a simp
 <!-- docuserve:examples:start -->
 | Example | Complexity | Launch |
 |---------|------------|--------|
-| [Bookshop](examples/bookshop/README.md) | Intermediate | [&#9654; Launch](examples/bookshop/index.html) |
+| [Bookshop](examples/bookshop/README.md) | Intermediate | [Launch](examples/bookshop/index.html) |
 <!-- docuserve:examples:end -->
