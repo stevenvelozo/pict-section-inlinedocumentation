@@ -4,33 +4,8 @@ A tour of the source tree for contributors.
 
 ## Project Layout
 
-```
-pict-section-inlinedocumentation/
-├── package.json
-├── source/
-│   ├── Pict-Section-InlineDocumentation.js   // Main section class
-│   ├── services/
-│   │   ├── TopicStore.js
-│   │   ├── TopicRenderer.js
-│   │   ├── TooltipBinder.js
-│   │   └── AutoTooltipGenerator.js
-│   ├── views/
-│   │   ├── SidebarView.js
-│   │   ├── ReadingPaneView.js
-│   │   └── TooltipView.js
-│   ├── templates/
-│   │   ├── sidebar.tpl
-│   │   ├── reading-pane.tpl
-│   │   └── tooltip.tpl
-│   └── util/
-│       ├── routeMatch.js
-│       └── topicKey.js
-└── test/
-    ├── TopicStore.tests.js
-    ├── TooltipBinder.tests.js
-    ├── AutoTooltipGenerator.tests.js
-    └── Section.tests.js
-```
+<!-- bespoke diagram: edit diagrams/project-layout.mmd or .hints.json, then: npx pict-renderer-graph build modules/pict/pict-section-inlinedocumentation/docs -->
+![Project Layout](diagrams/project-layout.svg)
 
 ## Class Summary
 
