@@ -2213,20 +2213,44 @@ class InlineDocumentationProvider extends libPictProvider
 			}
 			else if (tmpCurrentGroup)
 			{
-				// Indented item — document within the current group
+				// Indented item — a document (link) or a sub-folder (no link)
+				// within the current group. Capture the nesting Level from the
+				// indentation so the nav can render real hierarchy.
+				let tmpLevel = Math.max(0, Math.floor((tmpIndent - 2) / 2));
 				if (tmpLinkMatch)
 				{
 					tmpCurrentGroup.Items.push({
 						Name: tmpLinkMatch[1].trim(),
-						Path: this._normalizePath(tmpLinkMatch[2].trim())
+						Path: this._normalizePath(tmpLinkMatch[2].trim()),
+						Level: tmpLevel
 					});
 				}
 				else
 				{
 					tmpCurrentGroup.Items.push({
 						Name: tmpItemContent,
-						Path: ''
+						Path: '',
+						Level: tmpLevel,
+						IsFolder: true
 					});
+				}
+			}
+		}
+
+		// Make sub-folder nodes actionable: resolve each folder's first
+		// descendant document (the items are in depth-first order, so scan
+		// forward until we leave the folder's subtree) so clicking the folder
+		// opens its first child.
+		for (let g = 0; g < tmpGroups.length; g++)
+		{
+			let tmpItems = tmpGroups[g].Items || [];
+			for (let a = 0; a < tmpItems.length; a++)
+			{
+				if (!tmpItems[a].IsFolder) { continue; }
+				for (let b = a + 1; b < tmpItems.length; b++)
+				{
+					if ((tmpItems[b].Level || 0) <= (tmpItems[a].Level || 0)) { break; }
+					if (tmpItems[b].Path) { tmpItems[a].FirstChildPath = tmpItems[b].Path; break; }
 				}
 			}
 		}

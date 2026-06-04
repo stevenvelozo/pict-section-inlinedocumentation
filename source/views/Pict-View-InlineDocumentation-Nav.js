@@ -112,7 +112,7 @@ const _ViewConfiguration =
 		}
 		.pict-inline-doc-nav-item {
 			display: block;
-			padding: 0.25em 0.8em 0.25em 1.6em;
+			padding: 0.25em 0.8em 0.25em calc(1.6em + var(--doc-nav-level, 0) * 0.85em);
 			color: var(--theme-color-text-secondary, #5E5549);
 			text-decoration: none;
 			font-size: 0.85em;
@@ -123,6 +123,25 @@ const _ViewConfiguration =
 		.pict-inline-doc-nav-item:hover {
 			background: var(--theme-color-background-tertiary, #EDE8DF);
 		}
+		.pict-inline-doc-nav-folder {
+			font-weight: 600;
+			color: var(--theme-color-text-primary, #3D3229);
+		}
+		.pict-inline-doc-nav-folder-icon {
+			margin-right: 0.4em;
+			vertical-align: -0.12em;
+			opacity: 0.65;
+		}
+		.pict-inline-doc-nav-file-icon {
+			margin-right: 0.4em;
+			vertical-align: -0.12em;
+			opacity: 0.55;
+		}
+		.pict-inline-doc-nav-section-dot {
+			margin-right: 0.4em;
+			vertical-align: -0.12em;
+			opacity: 0.3;
+		}
 		.pict-inline-doc-nav-item.active {
 			background: var(--theme-color-background-hover, #E8E3D8);
 			color: var(--theme-color-brand-primary, #2E7D74);
@@ -131,7 +150,7 @@ const _ViewConfiguration =
 		}
 		.pict-inline-doc-nav-heading {
 			display: block;
-			padding: 0.15em 0.8em 0.15em 2.4em;
+			padding: 0.15em 0.8em 0.15em calc(2.4em + var(--doc-nav-level, 0) * 0.85em);
 			color: var(--theme-color-text-muted, #8A7F72);
 			font-size: 0.78em;
 			cursor: pointer;
@@ -143,7 +162,7 @@ const _ViewConfiguration =
 			color: var(--theme-color-text-secondary, #5E5549);
 		}
 		.pict-inline-doc-nav-heading.h3 {
-			padding-left: 3.2em;
+			padding-left: calc(3.2em + var(--doc-nav-level, 0) * 0.85em);
 			font-size: 0.72em;
 		}
 		/* Search icon in collapsed header */
@@ -624,22 +643,44 @@ class InlineDocumentationNavView extends libPictView
 				let tmpActive = (pCurrentPath === tmpGroup.Path) ? ' active' : '';
 				tmpHTML += '<a class="pict-inline-doc-nav-item' + tmpActive
 					+ '" data-doc-path="' + this._escapeHTML(tmpGroup.Path) + '">'
+					+ this._fileIconSVG()
 					+ this._escapeHTML(tmpGroup.Name)
 					+ '</a>';
 
 				// If this is the active item, render heading sub-items
 				if (pCurrentPath === tmpGroup.Path)
 				{
-					tmpHTML += this._renderHeadingSubItems(pHeadings, tmpFilterLower);
+					tmpHTML += this._renderHeadingSubItems(pHeadings, tmpFilterLower, 0);
 				}
 			}
 
 			for (let j = 0; j < tmpGroupItems.length; j++)
 			{
 				let tmpItem = tmpGroupItems[j];
+				let tmpIndent = ' style="--doc-nav-level:' + (tmpItem.Level || 0) + '"';
+
+				// Sub-folder node (no document of its own). Indent it by its
+				// level and, when it has descendants, make it clickable so it
+				// opens its first child document; mark it with a folder glyph.
 				if (!tmpItem.Path)
 				{
-					tmpHTML += '<span class="pict-inline-doc-nav-item">' + this._escapeHTML(tmpItem.Name) + '</span>';
+					if (tmpItem.FirstChildPath)
+					{
+						// Folders are navigational shortcuts to their first child; the
+						// child item carries the active highlight, so the folder doesn't.
+						tmpHTML += '<a class="pict-inline-doc-nav-item pict-inline-doc-nav-folder'
+							+ '" data-doc-path="' + this._escapeHTML(tmpItem.FirstChildPath) + '"' + tmpIndent + '>'
+							+ this._folderIconSVG()
+							+ this._escapeHTML(tmpItem.Name)
+							+ '</a>';
+					}
+					else
+					{
+						tmpHTML += '<span class="pict-inline-doc-nav-item pict-inline-doc-nav-folder"' + tmpIndent + '>'
+							+ this._folderIconSVG()
+							+ this._escapeHTML(tmpItem.Name)
+							+ '</span>';
+					}
 					continue;
 				}
 
@@ -647,7 +688,8 @@ class InlineDocumentationNavView extends libPictView
 				{
 					// External link — opens in a new tab
 					tmpHTML += '<a class="pict-inline-doc-nav-item pict-inline-doc-nav-item-external'
-						+ '" data-external-url="' + this._escapeHTML(tmpItem.ExternalURL) + '">'
+						+ '" data-external-url="' + this._escapeHTML(tmpItem.ExternalURL) + '"' + tmpIndent + '>'
+						+ this._fileIconSVG()
 						+ this._escapeHTML(tmpItem.Name)
 						+ '<svg class="pict-inline-doc-nav-external-icon" width="0.75em" height="0.75em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4a1 1 0 01-1 1H3a1 1 0 01-1-1V5a1 1 0 011-1h4"/><polyline points="8,2 14,2 14,8"/><line x1="14" y1="2" x2="7" y2="9"/></svg>'
 						+ '</a>';
@@ -656,14 +698,15 @@ class InlineDocumentationNavView extends libPictView
 				{
 					let tmpActive = (pCurrentPath === tmpItem.Path) ? ' active' : '';
 					tmpHTML += '<a class="pict-inline-doc-nav-item' + tmpActive
-						+ '" data-doc-path="' + this._escapeHTML(tmpItem.Path) + '">'
+						+ '" data-doc-path="' + this._escapeHTML(tmpItem.Path) + '"' + tmpIndent + '>'
+						+ this._fileIconSVG()
 						+ this._escapeHTML(tmpItem.Name)
 						+ '</a>';
 
 					// If this is the active item, render heading sub-items
 					if (pCurrentPath === tmpItem.Path)
 					{
-						tmpHTML += this._renderHeadingSubItems(pHeadings, tmpFilterLower);
+						tmpHTML += this._renderHeadingSubItems(pHeadings, tmpFilterLower, tmpItem.Level || 0);
 					}
 				}
 			}
@@ -676,19 +719,56 @@ class InlineDocumentationNavView extends libPictView
 	}
 
 	/**
+	 * A small folder glyph for sub-folder nav nodes. Uses currentColor so it
+	 * follows the theme like the other inline nav icons.
+	 *
+	 * @returns {string} inline SVG HTML
+	 */
+	_folderIconSVG()
+	{
+		return '<svg class="pict-inline-doc-nav-folder-icon" width="0.85em" height="0.85em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5a1 1 0 0 1 1-1h3.2l1.3 1.4h5.5a1 1 0 0 1 1 1V12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z"/></svg>';
+	}
+
+	/**
+	 * A small document glyph (a page with a folded corner) for markdown file
+	 * nodes. Same footprint as the folder glyph so files and folders line up at
+	 * the same depth.
+	 *
+	 * @returns {string} inline SVG HTML
+	 */
+	_fileIconSVG()
+	{
+		return '<svg class="pict-inline-doc-nav-file-icon" width="0.85em" height="0.85em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2.5H9L12 5.5V13.5H4Z"/><polyline points="9 2.5 9 5.5 12 5.5"/></svg>';
+	}
+
+	/**
+	 * A small filled dot marking an in-document section (a heading sub-item shown
+	 * beneath the active document). currentColor + low opacity keeps it quiet.
+	 *
+	 * @returns {string} inline SVG HTML
+	 */
+	_sectionDotSVG()
+	{
+		return '<svg class="pict-inline-doc-nav-section-dot" width="0.85em" height="0.85em" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.3" fill="currentColor"/></svg>';
+	}
+
+	/**
 	 * Render heading sub-items (h2 and h3) beneath the active nav item.
 	 *
 	 * @param {Array} pHeadings - Array of { Text, Slug, Level }
 	 * @param {string} pFilterText - Lowercase filter text
 	 * @returns {string} HTML string for heading sub-items
 	 */
-	_renderHeadingSubItems(pHeadings, pFilterText)
+	_renderHeadingSubItems(pHeadings, pFilterText, pBaseLevel)
 	{
 		if (!pHeadings || pHeadings.length < 1)
 		{
 			return '';
 		}
 
+		// Indent the headings relative to their (possibly nested) parent
+		// document item, so they line up one notch under it at any tree depth.
+		let tmpLevelStyle = ' style="--doc-nav-level:' + (pBaseLevel || 0) + '"';
 		let tmpHTML = '';
 
 		for (let i = 0; i < pHeadings.length; i++)
@@ -704,7 +784,8 @@ class InlineDocumentationNavView extends libPictView
 
 			let tmpLevelClass = (tmpHeading.Level === 3) ? ' h3' : '';
 			tmpHTML += '<a class="pict-inline-doc-nav-heading' + tmpLevelClass
-				+ '" data-heading-slug="' + this._escapeHTML(tmpHeading.Slug) + '">'
+				+ '" data-heading-slug="' + this._escapeHTML(tmpHeading.Slug) + '"' + tmpLevelStyle + '>'
+				+ this._sectionDotSVG()
 				+ this._escapeHTML(tmpText)
 				+ '</a>';
 		}

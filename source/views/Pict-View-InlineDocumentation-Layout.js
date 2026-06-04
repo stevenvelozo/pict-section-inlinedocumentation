@@ -25,13 +25,26 @@ const _ViewConfiguration =
 			overflow: hidden;
 		}
 		.pict-inline-doc-nav-container {
-			width: 240px;
-			min-width: 200px;
-			max-width: 300px;
+			width: var(--pict-inline-doc-nav-width, 240px);
+			min-width: 160px;
+			max-width: 640px;
 			border-right: 1px solid var(--theme-color-border-default, #E5DED4);
 			background: var(--theme-color-background-secondary, #F7F5F0);
 			overflow-y: auto;
 			flex-shrink: 0;
+		}
+		.pict-inline-doc-resizer {
+			flex: 0 0 6px;
+			width: 6px;
+			margin: 0 -3px;
+			z-index: 2;
+			cursor: col-resize;
+			background: transparent;
+			transition: background 0.12s ease;
+		}
+		.pict-inline-doc-resizer:hover,
+		.pict-inline-doc-resizer.pict-inline-doc-resizing {
+			background: var(--theme-color-brand-primary, #2E7D74);
 		}
 		.pict-inline-doc-content-container {
 			flex: 1;
@@ -55,6 +68,9 @@ const _ViewConfiguration =
 			overflow-y: visible;
 			flex-shrink: 0;
 		}
+		.pict-inline-doc.pict-inline-doc-compact .pict-inline-doc-resizer {
+			display: none;
+		}
 	`,
 
 	Templates:
@@ -64,6 +80,7 @@ const _ViewConfiguration =
 			Template: /*html*/`
 <div class="pict-inline-doc">
 	<div class="pict-inline-doc-nav-container" id="InlineDoc-Nav-Container"></div>
+	<div class="pict-inline-doc-resizer" id="InlineDoc-Resizer" title="Drag to resize the navigation"></div>
 	<div class="pict-inline-doc-content-container" id="InlineDoc-Content-Container"></div>
 </div>
 `
@@ -93,10 +110,105 @@ class InlineDocumentationLayoutView extends libPictView
 		// Inject all view CSS into the PICT-CSS style element
 		this.pict.CSSMap.injectCSS();
 
+		// Restore any saved nav width, then make the nav/content divider draggable
+		this._restoreNavWidth();
+		this._wireNavResizer();
+
 		// Watch for size changes and toggle compact mode
 		this._setupCompactModeObserver();
 
 		return super.onAfterRender();
+	}
+
+	/**
+	 * Make the divider between the nav and the content draggable so the reader
+	 * can widen or narrow the navigation. The width lives in a CSS custom
+	 * property on the layout container and is persisted to localStorage.
+	 */
+	_wireNavResizer()
+	{
+		if (typeof document === 'undefined')
+		{
+			return;
+		}
+
+		let tmpResizer = document.getElementById('InlineDoc-Resizer');
+		let tmpContainer = document.querySelector('.pict-inline-doc');
+		let tmpNav = document.getElementById('InlineDoc-Nav-Container');
+		if (!tmpResizer || !tmpContainer || !tmpNav)
+		{
+			return;
+		}
+
+		let tmpMin = 160;
+		let tmpMax = 640;
+		let tmpSelf = this;
+
+		tmpResizer.addEventListener('mousedown', (pDownEvent) =>
+		{
+			pDownEvent.preventDefault();
+			let tmpStartX = pDownEvent.clientX;
+			let tmpStartWidth = tmpNav.offsetWidth;
+
+			tmpResizer.classList.add('pict-inline-doc-resizing');
+			document.body.style.userSelect = 'none';
+			document.body.style.cursor = 'col-resize';
+
+			// A drag needs document-level move/up tracking; both listeners are
+			// removed on release, so nothing leaks across renders.
+			let fMove = (pMoveEvent) =>
+			{
+				let tmpWidth = tmpStartWidth + (pMoveEvent.clientX - tmpStartX);
+				tmpWidth = Math.max(tmpMin, Math.min(tmpMax, tmpWidth));
+				tmpContainer.style.setProperty('--pict-inline-doc-nav-width', tmpWidth + 'px');
+			};
+			let fUp = () =>
+			{
+				document.removeEventListener('mousemove', fMove);
+				document.removeEventListener('mouseup', fUp);
+				tmpResizer.classList.remove('pict-inline-doc-resizing');
+				document.body.style.userSelect = '';
+				document.body.style.cursor = '';
+				tmpSelf._persistNavWidth(tmpContainer.style.getPropertyValue('--pict-inline-doc-nav-width'));
+			};
+
+			document.addEventListener('mousemove', fMove);
+			document.addEventListener('mouseup', fUp);
+		});
+	}
+
+	_persistNavWidth(pWidth)
+	{
+		try
+		{
+			if (pWidth && typeof localStorage !== 'undefined')
+			{
+				localStorage.setItem('pict-inline-doc-nav-width', pWidth);
+			}
+		}
+		catch (pError) { /* storage unavailable — the width just won't persist */ }
+	}
+
+	_restoreNavWidth()
+	{
+		try
+		{
+			if (typeof localStorage === 'undefined')
+			{
+				return;
+			}
+			let tmpSaved = localStorage.getItem('pict-inline-doc-nav-width');
+			if (!tmpSaved)
+			{
+				return;
+			}
+			let tmpContainer = document.querySelector('.pict-inline-doc');
+			if (tmpContainer)
+			{
+				tmpContainer.style.setProperty('--pict-inline-doc-nav-width', tmpSaved);
+			}
+		}
+		catch (pError) { /* ignore */ }
 	}
 
 	/**
