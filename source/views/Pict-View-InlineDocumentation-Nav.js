@@ -358,6 +358,16 @@ class InlineDocumentationNavView extends libPictView
 		let tmpFilterText = tmpState.NavFilterText || '';
 		let tmpCurrentDocName = this._resolveCurrentDocName(tmpState, tmpCurrentPath);
 
+		// Reflect the collapsed state on the nav CONTAINER (the layout owns its
+		// width). Collapsing then shrinks the whole panel to a thin strip and hands
+		// the freed width back to the content, instead of hiding the outline while
+		// the container stays full-width.
+		let tmpNavContainer = document.getElementById('InlineDoc-Nav-Container');
+		if (tmpNavContainer)
+		{
+			tmpNavContainer.classList.toggle('pict-inline-doc-nav-collapsed', tmpIsCollapsed);
+		}
+
 		let tmpHTML = '';
 
 		let tmpSearchQuery = tmpState.SearchQuery || '';

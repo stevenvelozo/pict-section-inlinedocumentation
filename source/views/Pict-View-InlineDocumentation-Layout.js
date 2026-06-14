@@ -55,6 +55,26 @@ const _ViewConfiguration =
 		.pict-inline-doc-nav-container.pict-inline-doc-nav-hidden {
 			display: none;
 		}
+		/* Whole-panel collapse: shrink the nav to a thin strip showing only the
+		   expand chevron, handing the freed width back to the content. The Nav
+		   view toggles .pict-inline-doc-nav-collapsed on the container. width is
+		   !important so it beats any inline width left by the drag-resizer. */
+		.pict-inline-doc-nav-container.pict-inline-doc-nav-collapsed {
+			width: 40px !important;
+			min-width: 40px;
+		}
+		.pict-inline-doc-nav-container.pict-inline-doc-nav-collapsed + .pict-inline-doc-resizer {
+			display: none;
+		}
+		.pict-inline-doc-nav-collapsed .pict-inline-doc-nav-collapsed-header {
+			flex-direction: column;
+			padding: 0.6em 0;
+			justify-content: flex-start;
+		}
+		.pict-inline-doc-nav-collapsed .pict-inline-doc-nav-current-title,
+		.pict-inline-doc-nav-collapsed .pict-inline-doc-nav-search-icon {
+			display: none;
+		}
 		/* Compact mode: stack nav above content when container is narrow */
 		.pict-inline-doc.pict-inline-doc-compact {
 			flex-direction: column;
