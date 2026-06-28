@@ -1983,8 +1983,10 @@ class InlineDocumentationProvider extends libPictProvider
 				};
 			}
 
-			// Internal doc link — mark for interception
-			let tmpPath = pHref.replace(/^\.\//, '').replace(/^\//, '');
+			// Internal doc link — mark for interception. Strip a route-style prefix ("#/page/foo.md")
+			// so the rel carries a clean doc path; otherwise loadDocument() reads the leading "#" as an
+			// anchor delimiter and fails to resolve the document (body cross-links would 404).
+			let tmpPath = pHref.replace(/^#\/page\//, '').replace(/^#\//, '').replace(/^\.\//, '').replace(/^\//, '');
 			return {
 				href: 'javascript:void(0)',
 				// Use a data attribute for the click handler
